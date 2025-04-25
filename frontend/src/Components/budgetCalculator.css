@@ -1,0 +1,510 @@
+/* Main container */
+.main-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f0fdf4; /* Light background color */
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 6rem;
+    background-color: #bbf7d0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1.5rem 0;
+    border-right: 1px solid #86efac;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  /* Navigation items */
+  .nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  /* Sidebar button */
+  .sidebar-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #bbf7d0;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    width: 100%;
+    padding: 0.75rem 0;
+    text-align: center;
+    border-left: 4px solid transparent;
+    transition: background-color 0.2s, border-left 0.2s;
+  }
+  
+  /* Active button */
+  .sidebar-button.active {
+    border-left: 4px solid #059669;
+    background-color: rgba(5, 150, 105, 0.2);
+  }
+  
+  /* Hover effect */
+  .sidebar-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Icons */
+  .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #065f46;
+  }
+  
+  .label {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    color: #065f46;
+  }
+  
+  /* Main content */
+  .main-content {
+    margin-left: 6rem;
+    padding: 2rem;
+    width: calc(100% - 6rem);
+    overflow-y: auto;
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #86efac;
+  }
+  
+  /* Title */
+  .title {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: #065f46;
+  }
+  
+  /* Cart button */
+  .cart-button {
+    background-color: #059669;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+  }
+  
+  .cart-button:hover {
+    background-color: #047857;
+  }
+  
+  /* Cart count */
+  .cart-count {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    background-color: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  /* Budget section */
+  .budget-section {
+    padding: 2rem 0;
+    flex: 1;
+  }
+  
+  /* Budget container */
+  .budget-container {
+    background-color: #dcfce7;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #86efac;
+  }
+  
+  /* Budget header */
+  .budget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  /* Section title */
+  .section-title {
+    color: #065f46;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  /* Save button */
+  .save-button {
+    display: flex;
+    align-items: center;
+    background-color: #059669;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .save-button:hover {
+    background-color: #047857;
+  }
+  
+  .button-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+  }
+  
+  /* Cart table container */
+  .cart-table-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    border: 1px solid #86efac;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Cart table */
+  .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  /* Table header */
+  .table-header {
+    background-color: #bbf7d0;
+  }
+  
+  .table-header th {
+    padding: 1rem;
+    font-weight: 600;
+    color: #065f46;
+    text-align: left;
+  }
+  
+  /* Cart item */
+  .cart-item {
+    border-top: 1px solid #dcfce7;
+  }
+  
+  .cart-item td {
+    padding: 1rem;
+    color: #374151;
+  }
+  
+  /* Destination cell */
+  .destination-cell {
+    min-width: 14rem;
+  }
+  
+  .destination-name {
+    font-weight: 500;
+    color: #065f46;
+  }
+  
+  .activities-list {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+  
+  /* Duration cell */
+  .duration-cell {
+    width: 10rem;
+  }
+  
+  .duration-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .counter-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background-color: #dcfce7;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .counter-button:hover {
+    background-color: #bbf7d0;
+  }
+  
+  .counter-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .counter-icon {
+    width: 1rem;
+    height: 1rem;
+    color: #065f46;
+  }
+  
+  .duration-value {
+    margin: 0 1rem;
+    font-weight: 500;
+  }
+  
+  /* Item total */
+  .item-total {
+    font-weight: 500;
+    text-align: right;
+    color: #065f46;
+  }
+  
+  /* Remove cell */
+  .remove-cell {
+    width: 3rem;
+    text-align: center;
+  }
+  
+  .remove-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ef4444;
+    transition: color 0.2s;
+  }
+  
+  .remove-button:hover {
+    color: #b91c1c;
+  }
+  
+  .remove-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  /* Empty cart */
+  .empty-cart td {
+    padding: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+  }
+  
+  /* Cost summary section */
+  .cost-summary-section {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  /* Cost breakdown */
+  .cost-breakdown {
+    flex: 1;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #86efac;
+  }
+  
+  /* Total summary */
+  .total-summary {
+    width: 33.333%;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #86efac;
+  }
+  
+  /* Summary title */
+  .summary-title {
+    color: #065f46;
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  
+  /* Breakdown item */
+  .breakdown-item {
+    margin-bottom: 1.5rem;
+  }
+  
+  .breakdown-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Breakdown title */
+  .breakdown-title {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Breakdown details */
+  .breakdown-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Breakdown row */
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+  
+  /* Subtotal row */
+  .breakdown-row.subtotal {
+    font-weight: 500;
+    color: #065f46;
+    padding-top: 0.5rem;
+    border-top: 1px solid #dcfce7;
+    margin-top: 0.5rem;
+  }
+  
+  /* Summary details */
+  .summary-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  /* Summary row */
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    color: #4b5563;
+  }
+  
+  /* Total row */
+  .summary-row.total {
+    font-weight: 500;
+    font-size: 1.125rem;
+    color: #065f46;
+    padding-top: 0.75rem;
+    border-top: 1px solid #dcfce7;
+    margin-top: 0.25rem;
+  }
+  
+  /* Checkout button */
+  .checkout-button {
+    width: 100%;
+    background-color: #059669;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1.5rem;
+  }
+  
+  .checkout-button:hover {
+    background-color: #047857;
+  }
+  
+  /* Add more button */
+  .add-more-button {
+    width: 100%;
+    background-color: transparent;
+    color: #059669;
+    border: 1px solid #059669;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 0.5rem;
+  }
+  
+  .add-more-button:hover {
+    background-color: #f0fdf4;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 1024px) {
+    .cost-summary-section {
+      flex-direction: column;
+    }
+    
+    .total-summary {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .cart-table {
+      display: block;
+      overflow-x: auto;
+    }
+    
+    .cart-table thead,
+    .cart-table tbody,
+    .cart-table tr {
+      display: block;
+      width: 100%;
+    }
+    
+    .cart-table tr {
+      margin-bottom: 1rem;
+    }
+    
+    .cart-table td,
+    .cart-table th {
+      display: block;
+      text-align: right;
+      padding: 0.5rem;
+    }
+    
+    .cart-table td::before {
+      content: attr(data-label);
+      float: left;
+      font-weight: 500;
+    }
+  }
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Ensure the sidebar and content areas are properly sized */
+.sidebar {
+    height: 100%; /* Full height for the sidebar */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.main-content {
+    flex: 1; /* Allow the content area to grow */
+    overflow-y: auto; /* Enable scrolling for the main content */
+    padding: 1rem; /* Add padding for better spacing */
+}

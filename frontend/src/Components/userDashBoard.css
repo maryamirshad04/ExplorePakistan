@@ -1,0 +1,186 @@
+/* Main container */
+.main-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f0fdf4; /* Light background color */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 6rem;
+  background-color: #bbf7d0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1.5rem 0;
+  border-right: 1px solid #86efac;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Navigation items */
+.nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Sidebar button */
+.sidebar-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #bbf7d0;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  width: 100%;
+  padding: 0.75rem 0;
+  text-align: center;
+  border-left: 4px solid transparent;
+  transition: background-color 0.2s, border-left 0.2s;
+}
+
+/* Active button */
+.sidebar-button.active {
+  border-left: 4px solid #059669;
+  background-color: rgba(5, 150, 105, 0.2);
+}
+
+/* Hover effect */
+.sidebar-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main content */
+.main-content {
+  margin-left: 6rem;
+  padding: 2rem;
+  width: calc(100% - 6rem);
+  overflow-y: auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #86efac;
+}
+
+/* Title */
+.title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #065f46;
+}
+
+/* Recommendation section */
+.recommendation-section {
+  padding: 2rem;
+  flex: 1;
+}
+
+/* Recommendation box */
+.recommendation-box {
+  background-color: #dcfce7;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #86efac;
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+/* City card */
+.city-card {
+  background-color: #bbf7d0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid #86efac;
+}
+
+/* Card content */
+.card-content {
+  height: 16rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+/* City name */
+.city-name {
+  font-size: 2.25rem;
+  font-weight: bold;
+  color: #065f46;
+  margin-bottom: 1rem;
+}
+
+/* Description */
+.description {
+  color: #047857;
+  text-align: center;
+}
+
+/* Explore button */
+.explore-button {
+  margin-top: 1.5rem;
+  background-color: #059669;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.explore-button:hover {
+  background-color: #047857;
+}
+
+/* About us */
+.about-us {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(0, 128, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.about-us p {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Ensure the sidebar and content areas are properly sized */
+.sidebar {
+  height: 100%; /* Full height for the sidebar */
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.main-content {
+  flex: 1; /* Allow the content area to grow */
+  overflow-y: auto; /* Enable scrolling for the main content */
+  padding: 1rem; /* Add padding for better spacing */
+}
