@@ -20,23 +20,28 @@ const SignUp = () => {
       const user = userCredential.user;
       console.log("User registered:", user);
 
-      // Send user data to backend
-      // Send user data to backend API
-      // NOTE: Replace the URL and request structure according to your backend API specifications
-      await fetch("YOUR_API_ENDPOINT/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          userName,
-          // Add any additional fields your API requires
-        }),
+      // Save user data to Firebase Realtime Database or Firestore
+      // For Realtime Database
+      const db = getDatabase();
+      await set(ref(db, 'users/' + user.uid), {
+        userName: userName,
+        email: email,
       });
+
+      // Alternatively, for Firestore:
+      // import { getFirestore, doc, setDoc } from "firebase/firestore";
+      // const db = getFirestore();
+      // await setDoc(doc(db, "users", user.uid), {
+      //   userName: userName,
+      //   email: email,
+      // });
+
+      alert("Sign-up successful!");
 
       alert("Sign-up successful!");
     } catch (error) {
-      alert("Error signing up:", error);
+      console.error("Error signing up:", error.message);
+      alert(`Error signing up: ${error.message}`);
     }
   };
 
