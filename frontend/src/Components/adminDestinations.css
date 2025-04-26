@@ -3,7 +3,7 @@
   display: flex;
   height: 100vh;
   background-color: #f0fdf4;
-  overflow: hidden; /* Container doesn't scroll */
+  /* Removed overflow: hidden to allow scrolling */
 }
 
 /* Sidebar Styles */
@@ -68,34 +68,28 @@
   color: #065f46;
 }
 
-/* Main Content - FIXED APPROACH */
+/* Main Content - Fixed structure with proper scrolling */
 .main-content {
   margin-left: 6rem;
   width: calc(100% - 6rem);
   height: 100vh;
   overflow-y: auto; /* Enable scrolling */
-  position: relative;
   display: flex;
   flex-direction: column;
+  padding-bottom: 2rem; /* Add padding at bottom for better visibility */
 }
 
-/* Fixed Header Container */
-.fixed-header-container {
+/* Header Styles - Make it sticky */
+.header {
   position: sticky;
   top: 0;
-  z-index: 50;
-  background-color: #f0fdf4;
-  width: 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* Header Styles */
-.header {
+  z-index: 30;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 2rem 2rem 1rem;
   border-bottom: 1px solid #86efac;
+  background-color: #f0fdf4; /* Ensure background color is set */
 }
 
 .title {
@@ -105,13 +99,17 @@
   margin: 0;
 }
 
-/* Action Bar Styles */
+/* Action Bar Styles - Make it sticky too, just below header */
 .action-bar {
+  position: sticky;
+  top: 5rem; /* Positioned below the header */
+  z-index: 29;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
   border-bottom: 1px solid #dcfce7;
+  background-color: #f0fdf4; /* Ensure background color is set */
 }
 
 .search-container {
@@ -161,31 +159,21 @@
   height: 18px;
 }
 
-/* Content Container - holds all scrollable content */
-.content-container {
-  padding: 2rem;
-  flex: 1;
-}
-
-/* Table Styles */
+/* Table Styles - Improved for scrolling */
 .table-container {
   background-color: white;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   border: 1px solid #86efac;
-  overflow: hidden;
-  margin-bottom: 2rem;
+  overflow: auto; /* Enable both horizontal and vertical scrolling if needed */
+  margin: 2rem;
+  max-height: calc(100vh - 12rem); /* Leave room for header and action bar */
 }
 
 .destinations-table {
   width: 100%;
   border-collapse: collapse;
   min-width: 900px; /* Ensure table doesn't shrink too much */
-}
-
-.table-scroll-container {
-  overflow-x: auto;
-  max-height: 60vh;
 }
 
 .destinations-table th {
@@ -261,7 +249,7 @@
   color: #065f46;
 }
 
-/* Notification Styles */
+/* Notification Styles - Fixed positioning to prevent layout shift */
 .notification {
   position: fixed;
   top: 2rem;
@@ -307,7 +295,7 @@
   }
 }
 
-/* Modal Styles */
+/* Modal Styles - Improved for better scrolling */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -327,11 +315,10 @@
   width: 90%;
   max-width: 800px;
   max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border: 1px solid #86efac;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border: 1px solid #86efac;
 }
 
 .modal-header {
@@ -374,9 +361,8 @@
 
 .modal-form {
   padding: 1.5rem;
-  overflow-y: auto;
+  overflow-y: auto; /* Enable vertical scrolling for form content */
   flex: 1;
-  max-height: calc(90vh - 130px);
 }
 
 .form-grid {
@@ -532,6 +518,7 @@
   .main-content {
     margin-left: 0;
     width: 100%;
+    padding-top: 4rem; /* Add space for the mobile sidebar */
   }
   
   .sidebar {
@@ -540,6 +527,7 @@
     flex-direction: row;
     padding: 0.5rem;
     position: fixed;
+    bottom: auto;
     z-index: 40;
   }
   
@@ -550,13 +538,22 @@
     margin-top: 0;
   }
   
-  .fixed-header-container {
-    top: 4rem;
+  .header {
+    top: 4rem; /* Position below mobile sidebar */
   }
   
-  .content-container {
-    padding: 1rem;
-    padding-top: 5rem;
+  .action-bar {
+    top: 9rem; /* Position below header and mobile sidebar */
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .search-container {
+    width: 100%;
+  }
+  
+  .table-container {
+    margin: 1rem;
   }
   
   .modal {
