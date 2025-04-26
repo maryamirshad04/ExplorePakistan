@@ -367,7 +367,7 @@ const Souvenirs = () => {
                       </div>
                     </div>
                     
-                    <p className="card-description">{item.description}</p>
+                  
                     
                     <div className="card-tags">
                       {item.tags.map(tag => (
@@ -386,13 +386,7 @@ const Souvenirs = () => {
                         <span className="price-value">{formatCurrency(item.price)}</span>
                       </div>
                       
-                      <button 
-                        className="add-to-cart-button"
-                        onClick={() => addToCart(item)}
-                      >
-                        <Plus className="add-icon" />
-                        <span>Add to Cart</span>
-                      </button>
+                      
                     </div>
                   </div>
                 </div>

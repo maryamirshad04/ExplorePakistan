@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './destinations.css';
-import { ShoppingCart, Home, Clock, Heart, Gift, Search, MapPin, Star, Plus } from 'lucide-react';
+// Explicitly import all icons to avoid any issues
+import { ShoppingCart, Home, Clock, Heart, Gift, Search, MapPin, Star, Plus, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Destinations = () => {
   const navigate = useNavigate();
-  const currentPath = window.location.pathname.toLowerCase(); // Highlight active icon
+  const currentPath = window.location.pathname.toLowerCase();
 
   // Sample destinations data
   const [destinations, setDestinations] = useState([
@@ -103,7 +104,6 @@ const Destinations = () => {
   useEffect(() => {
     let results = destinations;
     
-    // Apply search query
     if (searchQuery) {
       results = results.filter(dest => 
         dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -112,12 +112,10 @@ const Destinations = () => {
       );
     }
     
-    // Apply region filter
     if (selectedRegion !== "All") {
       results = results.filter(dest => dest.region === selectedRegion);
     }
     
-    // Apply tag filter
     if (selectedTag !== "All") {
       results = results.filter(dest => dest.tags.includes(selectedTag));
     }
@@ -127,26 +125,17 @@ const Destinations = () => {
 
   // Add destination to cart
   const addToCart = (destination) => {
-    // Check if destination is already in cart
     if (cart.some(item => item.id === destination.id)) {
       setNotificationMessage(`${destination.name} is already in your budget!`);
     } else {
-      // Add to cart
       const updatedCart = [...cart, destination];
       setCart(updatedCart);
       setNotificationMessage(`${destination.name} added to your budget!`);
-      
-      // Optional: Store in localStorage
       localStorage.setItem('travelCart', JSON.stringify(updatedCart));
-      
-      // Optional: Navigate to budget page
-      // navigate('/budget');
     }
     
-    // Show notification
     setShowNotification(true);
     
-    // Hide notification after 3 seconds
     setTimeout(() => {
       setShowNotification(false);
     }, 3000);
@@ -156,7 +145,13 @@ const Destinations = () => {
   useEffect(() => {
     const savedCart = localStorage.getItem('travelCart');
     if (savedCart) {
-      setCart(JSON.parse(savedCart));
+      try {
+        const parsedCart = JSON.parse(savedCart);
+        setCart(parsedCart);
+      } catch (error) {
+        console.error("Failed to parse cart data:", error);
+        localStorage.removeItem('travelCart');
+      }
     }
   }, []);
 
@@ -186,7 +181,10 @@ const Destinations = () => {
             onClick={() => navigate('/budget')}
           >
             <ShoppingCart className="icon" />
-            <span className="label">Budget</span>
+            <span className="cart-button-container">
+              <span className="label">Budget</span>
+              {cart.length > 0 && <span className="sidebar-cart-count">{cart.length}</span>}
+            </span>
           </button>
 
           <button
@@ -212,9 +210,9 @@ const Destinations = () => {
         <div className="header">
           <h1 className="title">DESTINATIONS</h1>
           <div className="cart-container">
-            <button className="cart-button" onClick={() => navigate('/budget')}>
-              <ShoppingCart className="icon" />
-              {cart.length > 0 && <span className="cart-count">{cart.length}</span>}
+            <button className="cart-button" onClick={() => navigate('/budget')} aria-label="View Budget">
+              <ShoppingCart size={24} />
+              {cart.length > 0 && <span className="cart-count" key={cart.length}>{cart.length}</span>}
             </button>
           </div>
         </div>
@@ -290,7 +288,7 @@ const Destinations = () => {
                       }}
                       title="Add to Budget"
                     >
-                      <Plus className="quick-add-icon" />
+                      <Plus className="plus-icon" />
                     </button>
                   </div>
                   
@@ -328,13 +326,13 @@ const Destinations = () => {
                         <span className="price-period">/ day</span>
                       </div>
                       
-                      <button 
-                        className="add-to-cart-button"
-                        onClick={() => addToCart(destination)}
-                      >
-                        <Plus className="add-icon" />
-                        <span>Add to Budget</span>
-                      </button>
+                          <button 
+                                             className="add-to-cart-button"
+                                             onClick={() => addToCart(destination)}
+                                           >
+                                             <Plus className="add-icon" />
+                                             <span>Add to Cart</span>
+                                           </button>
                     </div>
                   </div>
                 </div>

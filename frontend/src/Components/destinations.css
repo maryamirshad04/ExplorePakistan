@@ -1,400 +1,232 @@
-/* Destinations page specific styles */
-.destinations-section {
-    padding: 2rem 0;
-  }
-  
-  /* Search and Filter Bar */
-  .search-filter-container {
-    background-color: #dcfce7;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #86efac;
-    margin-bottom: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  
-  .search-bar {
-    flex: 1;
-    min-width: 300px;
-    display: flex;
-    align-items: center;
-    background-color: white;
-    border-radius: 0.5rem;
-    padding: 0 1rem;
-    border: 1px solid #86efac;
-  }
-  
-  .search-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-    color: #065f46;
-    margin-right: 0.5rem;
-  }
-  
-  .search-input {
-    flex: 1;
-    border: none;
-    padding: 0.75rem 0;
-    font-size: 1rem;
-    background: transparent;
-    color: #1f2937;
-  }
-  
-  .search-input:focus {
-    outline: none;
-  }
-  
-  .filters {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-  
-  .filter-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .filter-group label {
-    font-weight: 500;
-    color: #065f46;
-  }
-  
-  .filter-select {
-    background-color: white;
-    border: 1px solid #86efac;
-    border-radius: 0.375rem;
-    padding: 0.5rem 2rem 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    color: #1f2937;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23065f46'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 1rem;
-  }
-  
-  /* Destination Cards Grid */
+/* Keep your existing styles and just add these targeted fixes */
+
+/* Fix main container width */
+.main-container {
+  max-width: 100vw; /* Use viewport width to prevent overflow */
+  overflow-x: hidden; /* Hide horizontal overflow */
+}
+
+/* Constrain destinations grid width */
+.destinations-grid {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Make destination cards responsive without overflowing */
+.destination-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure content inside cards doesn't cause overflow */
+.card-title, 
+.card-description {
+  word-break: break-word;
+}
+
+
+/* Adjust the main content area to fit within viewport */
+.main-content {
+  width: 100%;
+  max-width: calc(100vw - 80px); /* Account for sidebar width */
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+/* Responsive adjustment for cards on smaller screens */
+@media (max-width: 992px) {
   .destinations-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
-  
-  .destination-card {
-    background-color: white;
-    border-radius: 0.5rem;
-    border: 1px solid #86efac;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s, box-shadow 0.3s;
+}
+/* Hide specifically the sidebar cart count number */
+.sidebar-cart-count {
+  display: none !important;
+}
+
+/* Make sure the label remains properly positioned */
+.cart-button-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* If the cart button itself needs adjustments */
+.sidebar-button {
+  position: relative;
+}
+/* Fix for the cart button in the header that's partially hidden */
+.cart-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 10; /* Ensure it stays above other elements */
+}
+
+.cart-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  color: #1f2937;
+  visibility: visible !important; /* Force visibility */
+  opacity: 1 !important; /* Ensure full opacity */
+  position: relative;
+  z-index: 5;
+}
+
+/* Hide cart count but keep button visible */
+.cart-count {
+  display: none !important;
+}
+
+/* Ensure ShoppingCart icon is visible */
+.cart-button svg {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* Make sure header has proper spacing */
+/* Keep your existing styles and just add these targeted fixes */
+
+/* Fix main container width */
+.main-container {
+  max-width: 100vw; /* Use viewport width to prevent overflow */
+  overflow-x: hidden; /* Hide horizontal overflow */
+}
+
+/* Constrain destinations grid width */
+.destinations-grid {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Make destination cards responsive without overflowing */
+.destination-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure content inside cards doesn't cause overflow */
+.card-title, 
+.card-description {
+  word-break: break-word;
+}
+
+
+/* Adjust the main content area to fit within viewport */
+.main-content {
+  width: 100%;
+  max-width: calc(100vw - 80px); /* Account for sidebar width */
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+/* Responsive adjustment for cards on smaller screens */
+@media (max-width: 992px) {
+  .destinations-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
-  
-  .destination-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-image {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-  }
-  
-  .card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .card-rating {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background-color: rgba(5, 150, 105, 0.9);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 1rem;
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    font-size: 0.875rem;
-  }
-  
-  .star-icon {
-    width: 1rem;
-    height: 1rem;
-    margin-right: 0.25rem;
-    color: #fbbf24;
-  }
-  
-  /* Quick Add Button */
-  .quick-add-button {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background-color: rgba(5, 150, 105, 0.9);
-    color: white;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .quick-add-button:hover {
-    background-color: #047857;
-    transform: scale(1.1);
-  }
-  
-  .quick-add-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-    color: white;
-  }
-  
-  .card-content {
-    padding: 1.5rem;
-  }
-  
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.75rem;
-  }
-  
-  .card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #065f46;
-    margin: 0;
-  }
-  
-  .card-location {
-    display: flex;
-    align-items: center;
-    color: #6b7280;
-    font-size: 0.875rem;
-  }
-  
-  .location-icon {
-    width: 0.875rem;
-    height: 0.875rem;
-    margin-right: 0.25rem;
-  }
-  
-  .card-description {
-    color: #4b5563;
-    margin-bottom: 1rem;
-    line-height: 1.5;
-  }
-  
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .tag {
-    background-color: #dcfce7;
-    color: #065f46;
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-  
-  .card-activities {
-    margin-bottom: 1.5rem;
-  }
-  
-  .card-activities h4 {
-    color: #065f46;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-  }
-  
-  .activities-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    color: #6b7280;
-    font-size: 0.875rem;
-  }
-  
-  .activities-list li {
-    padding: 0.25rem 0;
-  }
-  
-  .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 1rem;
-    border-top: 1px solid #dcfce7;
-  }
-  
-  .card-price {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .price-label {
-    font-size: 0.75rem;
-    color: #6b7280;
-  }
-  
-  .price-value {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #065f46;
-  }
-  
-  .price-period {
-    font-size: 0.75rem;
-    color: #6b7280;
-  }
-  
-  .add-to-cart-button {
-    display: flex;
-    align-items: center;
-    background-color: #059669;
-    color: white;
-    border: none;
-    border-radius: 0.375rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .add-to-cart-button:hover {
-    background-color: #047857;
-  }
-  
-  .add-icon {
-    width: 1rem;
-    height: 1rem;
-    margin-right: 0.25rem;
-  }
-  
-  /* Cart counter */
-  .cart-container {
-    position: relative;
-  }
-  
-  .cart-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #ef4444;
-    color: white;
-    font-size: 0.75rem;
-    width: 1.25rem;
-    height: 1.25rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-  }
-  
-  /* Notification */
-  .notification {
-    position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
-    background-color: #059669;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    z-index: 100;
-    animation: slideIn 0.3s ease-out forwards;
-  }
-  
-  @keyframes slideIn {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-  
-  /* No results message */
-  .no-results {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 3rem;
-    background-color: #dcfce7;
-    border-radius: 0.5rem;
-    color: #065f46;
-  }
-  
-  .reset-button {
-    margin-top: 1rem;
-    background-color: #059669;
-    color: white;
-    border: none;
-    border-radius: 0.375rem;
-    padding: 0.5rem 1.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .reset-button:hover {
-    background-color: #047857;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .search-filter-container {
-      flex-direction: column;
-    }
-    
-    .search-bar,
-    .filters {
-      width: 100%;
-    }
-    
-    .filters {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .filter-group {
-      width: 100%;
-    }
-    
-    .filter-select {
-      width: 100%;
-    }
-    
-    .destinations-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .destinations-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
+}
+/* Hide specifically the sidebar cart count number */
+.sidebar-cart-count {
+  display: none !important;
+}
+
+/* Make sure the label remains properly positioned */
+.cart-button-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* If the cart button itself needs adjustments */
+.sidebar-button {
+  position: relative;
+}
+/* Fix for the cart button in the header that's partially hidden */
+.cart-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 10; /* Ensure it stays above other elements */
+}
+
+.cart-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  color: #1f2937;
+  visibility: visible !important; /* Force visibility */
+  opacity: 1 !important; /* Ensure full opacity */
+  position: relative;
+  z-index: 5;
+}
+
+/* Hide cart count but keep button visible */
+.cart-count {
+  display: none !important;
+}
+
+/* Ensure ShoppingCart icon is visible */
+.cart-button svg {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+}
+
+/* Make sure header has proper spacing */
+/* Fix for header being cut off from the top */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 0;
+  position: relative;
+  z-index: 5;
+  margin-top: 0; /* Ensure no unexpected top margin */
+  top: 0; /* Align to top of container */
+}
+
+/* Ensure the body and html elements don't have unexpected margins */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Fix parent container of header if needed */
+.site-wrapper, .page-container, .app-container {
+  padding-top: 0;
+  margin-top: 0;
+  overflow: visible;
+}
+
+/* If header is fixed position */
+.header.fixed, .fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* For sticky headers that might be getting cut */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
