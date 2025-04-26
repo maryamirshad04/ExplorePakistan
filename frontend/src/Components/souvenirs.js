@@ -84,7 +84,7 @@ const Souvenirs = () => {
       items: [
         { 
           id: 7,
-          name: "Peshawari Chappal", 
+          name:"Peshawari Chappal", 
           description: "Handcrafted traditional sandals known for durability and distinctive design", 
           location: "The original craftsmen can be found in the Namak Mandi and Jahangirpura areas of Peshawar city.",
           price: 1800,

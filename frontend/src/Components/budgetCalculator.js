@@ -146,7 +146,7 @@ const BudgetCalculator = () => {
                     <th className="text-left">Accommodation</th>
                     <th className="text-left">Transport</th>
                     <th className="text-center">Cost Per Day</th>
-                    <th className="text-right">Total</th>
+                    <th className="text-right">        Total</th>
                     <th></th>
                   </tr>
                 </thead>
