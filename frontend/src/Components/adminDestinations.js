@@ -285,7 +285,7 @@ const AdminDestinations = () => {
         {/* Action Bar */}
         <div className="action-bar">
           <div className="search-container">
-            <Search className="search-icon" />
+           
             <input 
               type="text" 
               placeholder="Search destinations..." 

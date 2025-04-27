@@ -169,7 +169,7 @@ const AdminUsers = () => {
               <h2 className="chart-title">User List</h2>
               <div className="search-wrapper">
                 <div className="search-bar">
-                  <Search className="search-icon" />
+                  
                   <input 
                     type="text" 
                     placeholder="Search users..." 
@@ -215,12 +215,7 @@ const AdminUsers = () => {
                             <UserCheck className="action-icon" />
                           }
                         </button>
-                        <button 
-                          className="action-btn edit-btn"
-                          title="Edit User"
-                        >
-                          <Edit className="action-icon" />
-                        </button>
+                       
                         <button 
                           className="action-btn delete-btn"
                           onClick={() => handleListDelete(user.id)}
