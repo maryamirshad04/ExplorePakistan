@@ -31,7 +31,7 @@ public class UserAuthController {
             int age;
             try {
                 age = Integer.parseInt(user.get("age"));
-                if (age <= 0) {
+                if (age <= 15 && age > 80) {
                     return ResponseEntity.badRequest().body("Error: Age must be a positive number");
                 }
             } catch (NumberFormatException e) {
