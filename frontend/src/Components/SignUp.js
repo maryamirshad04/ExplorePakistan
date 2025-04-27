@@ -8,6 +8,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
+  const [age, setAge] = useState("");
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -15,7 +16,8 @@ const SignUp = () => {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
+        age 
       );
       const user = userCredential.user;
       console.log("User registered:", user);
@@ -26,6 +28,7 @@ const SignUp = () => {
       await set(ref(db, 'users/' + user.uid), {
         userName: userName,
         email: email,
+        age: age,
       });
 
       // Alternatively, for Firestore:
@@ -150,6 +153,15 @@ const SignUp = () => {
             onChange={(e) => setPassword(e.target.value)}
             style={style.input_area}
           />
+          <label style={style.label_style}>Age</label>
+          <input
+            type="number"
+            placeholder="Age"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            style={style.input_area}
+          />
+          
           <button type="submit" style={style.button}>
             Sign Up
           </button>

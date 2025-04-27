@@ -19,13 +19,23 @@ public class UserAuthController {
     public ResponseEntity<?> signUp(@RequestBody Map<String, String> user) {
         try {
             // Validate input
-            if (user.get("email") == null || user.get("password") == null || user.get("name") == null ||
-                    user.get("email").isEmpty() || user.get("password").isEmpty() || user.get("name").isEmpty()) {
-                return ResponseEntity.badRequest().body("Error: Fields cannot be empty (email, password, name)");
+            if (user.get("email") == null || user.get("password") == null || user.get("name") == null || user.get("age") == null ||
+                    user.get("email").isEmpty() || user.get("password").isEmpty() || user.get("name").isEmpty() || user.get("age").isEmpty()) {
+                return ResponseEntity.badRequest().body("Error: Fields cannot be empty (email, password, name, age)");
             }
 
             if (user.get("password").length() < 6) {
                 return ResponseEntity.badRequest().body("Error: Password must be at least 6 characters long");
+            }
+
+            int age;
+            try {
+                age = Integer.parseInt(user.get("age"));
+                if (age <= 0) {
+                    return ResponseEntity.badRequest().body("Error: Age must be a positive number");
+                }
+            } catch (NumberFormatException e) {
+                return ResponseEntity.badRequest().body("Error: Age must be a valid number");
             }
 
             // Create user in Firebase Auth
@@ -42,6 +52,11 @@ public class UserAuthController {
             response.put("uid", userRecord.getUid());
             response.put("email", userRecord.getEmail());
             response.put("name", userRecord.getDisplayName());
+            response.put("age", String.valueOf(age));
+
+            // Here, you would typically store the age in your database along with the user details.
+            // For example:
+            // userRepository.save(new User(userRecord.getUid(), user.get("name"), user.get("email"), age));
 
             return ResponseEntity.ok(response);
 
@@ -73,6 +88,11 @@ public class UserAuthController {
                 response.put("uid", userRecord.getUid());
                 response.put("email", userRecord.getEmail());
                 response.put("name", userRecord.getDisplayName());
+
+                // Retrieve age from your database if stored
+                // For example:
+                // int age = userRepository.findByUid(userRecord.getUid()).getAge();
+                // response.put("age", String.valueOf(age));
 
                 return ResponseEntity.ok(response);
             } else {
