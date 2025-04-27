@@ -577,3 +577,8 @@
     margin-top: 0.5rem;
   }
 }
+/* Active button */
+.sidebar-button.active {
+  border-left: 4px solid #059669;
+  background-color: rgba(5, 150, 105, 0.2);
+}

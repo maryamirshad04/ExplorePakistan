@@ -100,8 +100,6 @@ const AdminSouvenirs = () => {
   const [selectedProvince, setSelectedProvince] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
   const [notification, setNotification] = useState({ show: false, message: "", type: "" });
 
   // New souvenir form state
@@ -166,7 +164,7 @@ const AdminSouvenirs = () => {
       setNotification({ show: false, message: "", type: "" });
     }, 3000);
   };
-// Removed the edit button from the UI by not rendering it in the admin actions
+
   // Handle form input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -260,31 +258,33 @@ const AdminSouvenirs = () => {
     showNotification(`${souvenirItem.name} has been added successfully`, "success");
   };
 
-  // Open delete confirmation modal
-  const confirmDelete = (item) => {
-    setItemToDelete(item);
-    setShowDeleteConfirm(true);
-  };
-
-  // Delete souvenir
-  const deleteSouvenir = () => {
-    if (!itemToDelete) return;
+  // Delete souvenir - Fixed implementation
+  const handleDelete = (item) => {
+    // Log to console for debugging
+    console.log(`Deleting souvenir: ${item.name} with ID: ${item.id} from ${item.province}`);
     
+    // Update the souvenirs state directly
     setSouvenirs(prevSouvenirs => {
-      return prevSouvenirs.map(provinceData => {
-        if (provinceData.province === itemToDelete.province) {
+      // Create a new array without modifying the original
+      const updatedSouvenirs = prevSouvenirs.map(provinceData => {
+        // If this is the province containing our item
+        if (provinceData.province === item.province) {
+          // Return a new province object with the item filtered out
           return {
             ...provinceData,
-            items: provinceData.items.filter(item => item.id !== itemToDelete.id)
+            items: provinceData.items.filter(souvenir => souvenir.id !== item.id)
           };
         }
+        // Return unchanged province data for other provinces
         return provinceData;
-      }).filter(provinceData => provinceData.items.length > 0); // Remove empty provinces
+      });
+      
+      // Filter out any provinces that now have empty items arrays
+      return updatedSouvenirs.filter(province => province.items.length > 0);
     });
     
-    setShowDeleteConfirm(false);
-    setItemToDelete(null);
-    showNotification(`${itemToDelete.name} has been deleted successfully`, "success");
+    // Show success notification
+    showNotification(`${item.name} has been deleted successfully`, "success");
   };
 
   return (
@@ -332,7 +332,6 @@ const AdminSouvenirs = () => {
         {/* Action Bar */}
         <div className="action-bar">
           <div className="search-container">
-            
             <input 
               type="text" 
               placeholder="Search souvenirs..." 
@@ -426,10 +425,10 @@ const AdminSouvenirs = () => {
                     </div>
                     
                     <div className="admin-actions">
-                    
                       <button 
                         className="delete-button"
-                        onClick={() => confirmDelete(item)}
+                        onClick={() => handleDelete(item)}
+                        type="button"
                       >
                         <Trash2 className="trash-icon" />
                         Delete
@@ -595,39 +594,6 @@ const AdminSouvenirs = () => {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="modal-overlay">
-          <div className="delete-confirm-modal">
-            <div className="modal-header">
-              <AlertTriangle className="warning-icon" />
-              <h3>Confirm Deletion</h3>
-            </div>
-            
-            <div className="modal-content">
-              <p>Are you sure you want to delete <strong>{itemToDelete?.name}</strong>?</p>
-              <p className="warning-text">This action cannot be undone.</p>
-            </div>
-            
-            <div className="modal-actions">
-              <button 
-                className="cancel-button"
-                onClick={() => setShowDeleteConfirm(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                className="delete-button"
-                onClick={deleteSouvenir}
-              >
-                <Trash2 className="trash-icon" />
-                Delete
-              </button>
-            </div>
           </div>
         </div>
       )}
