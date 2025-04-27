@@ -126,48 +126,7 @@ const travelPlansData = [
           
         </div>
 
-        {/* Stats Cards */}
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <Users className="icon" />
-            </div>
-            <div className="stat-content">
-              <h3 className="stat-value">{stats.totalUsers.toLocaleString()}</h3>
-              <p className="stat-label">Total Users</p>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon">
-              <Briefcase className="icon" />
-            </div>
-            <div className="stat-content">
-              <h3 className="stat-value">{stats.totalBookings.toLocaleString()}</h3>
-              <p className="stat-label">Total Bookings</p>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon">
-              <DollarSign className="icon" />
-            </div>
-            <div className="stat-content">
-              <h3 className="stat-value">{formatCurrency(stats.totalRevenue)}</h3>
-              <p className="stat-label">Total Revenue</p>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon">
-              <Map className="icon" />
-            </div>
-            <div className="stat-content">
-              <h3 className="stat-value">{stats.activeDestinations}</h3>
-              <p className="stat-label">Active Destinations</p>
-            </div>
-          </div>
-        </div>
+      
 
         {/* Charts Section - UPDATED */}
         <div className="charts-section">
