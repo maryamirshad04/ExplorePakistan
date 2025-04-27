@@ -20,7 +20,7 @@ const TravelHistory = () => {
       duration: '5 days',
       highlights: ['Altit Fort', 'Attabad Lake', 'Passu Cones'],
       rating: 5,
-      image: 'hunza.jpg'
+      
     },
     {
       id: 2,
@@ -110,11 +110,7 @@ const TravelHistory = () => {
             <div className="history-items">
               {travelHistory.map((trip) => (
                 <div key={trip.id} className="history-card">
-                  <div className="card-image-placeholder">
-                    <div className="image-overlay">
-                      <h3>{trip.city}</h3>
-                    </div>
-                  </div>
+                  
                   <div className="card-details">
                     <div className="trip-header">
                       <h3 className="trip-city">{trip.city}</h3>
