@@ -304,7 +304,7 @@ const Souvenirs = () => {
           {/* Search and Filter Bar */}
           <div className="search-filter-container">
             <div className="search-bar">
-              <Search className="search-icon" />
+             
               <input 
                 type="text" 
                 placeholder="Search souvenirs, crafts, locations..." 
@@ -351,7 +351,7 @@ const Souvenirs = () => {
               filteredItems.map(item => (
                 <div key={item.id} className="souvenir-card">
                   <div className="card-image">
-                    <img src={item.image} alt={item.name} />
+                    
                     <div className="card-rating">
                       <span>★</span>
                       <span>{item.rating}</span>

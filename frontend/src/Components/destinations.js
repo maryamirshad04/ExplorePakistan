@@ -221,7 +221,7 @@ const Destinations = () => {
           {/* Search and Filter Bar */}
           <div className="search-filter-container">
             <div className="search-bar">
-              <Search className="search-icon" />
+            
               <input 
                 type="text" 
                 placeholder="Search destinations, activities..." 
