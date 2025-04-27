@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './adminUsers.css';
-import { Home, BarChart2, Users, Map, Gift, DollarSign, Briefcase, Search, Trash2, Edit, UserX, UserCheck } from 'lucide-react';
+import { Home, BarChart2,Shield, Users, Map, Gift, DollarSign, Briefcase, Search, Trash2, Edit, UserX, UserCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminUsers = () => {
@@ -151,6 +151,13 @@ const AdminUsers = () => {
             <Gift className="icon" />
             <span className="label">Souvenirs</span>
           </button>
+          <button
+              className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}
+              onClick={() => navigate('/safety-guidelines')}
+            >
+              <Shield className="icon" />
+              <span className="label">Safety</span>
+            </button>
         </div>
       </div>
 

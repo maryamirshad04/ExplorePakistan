@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import './userDashBoard.css';
-import { ShoppingCart, Home, Clock, Heart, Gift } from 'lucide-react';
+import { ShoppingCart,Shield, Home, Clock, Heart, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ExplorePakistan = () => {
@@ -54,6 +54,13 @@ const [cart, setCart] = useState([]);
             <Gift className="icon" />
             <span className="label">Souvenirs</span>
           </button>
+          <button
+              className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}
+              onClick={() => navigate('/safety-guidelines')}
+            >
+              <Shield className="icon" />
+              <span className="label">Safety</span>
+            </button>
         </div>
       </div>
 

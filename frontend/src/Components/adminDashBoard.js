@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './adminDashBoard.css';
-import { Home, BarChart2, Users, Map, Gift, DollarSign, Briefcase, PieChart, TrendingUp } from 'lucide-react';
+import { Home, BarChart2, Users,Shield , Map, Gift, DollarSign, Briefcase, PieChart, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer, Line, BarChart, Bar, Cell, Pie } from 'recharts';
 
@@ -116,8 +116,16 @@ const travelPlansData = [
             <Gift className="icon" />
             <span className="label">Souvenirs</span>
           </button>
+          <button
+              className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}
+              onClick={() => navigate('/safety-guidelines')}
+            >
+              <Shield className="icon" />
+              <span className="label">Safety</span>
+            </button>
         </div>
       </div>
+     
 
       {/* Main Content */}
       <div className="main-content">
