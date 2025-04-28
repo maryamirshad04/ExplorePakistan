@@ -118,13 +118,53 @@ const [cart, setCart] = useState([]);
           </div>
         </div>
 
-        {/* About Us Section */}
-        <div className="about-us">
-          <p>
-            We have made this app to help people plan their trip to Pakistan's famous and beautiful locations. 
-            Explore the cultural richness, breathtaking landscapes, and vibrant cities of Pakistan with ease.
-          </p>
+      {/* About Us Section - Updated to match dashboard UI */}
+<div className="about-us-section recommendation-box">
+  <h2 className="section-title">ABOUT US</h2>
+  
+  <div className="about-content">
+    <p className="description">
+      It is created by a group of students from FAST-NUCES, Lahore, Pakistan.
+      We are passionate about travel and want to share our love for Pakistan with the world.
+      It is our 4th semester project for the course of Software Design and Architecture.
+    </p>
+    
+    <div className="team-container">
+      <h3 className="team-title">The group members are:</h3>
+      <div className="team-grid">
+        <div className="team-member">
+          <span className="member-name">Hadi Ali Akbar</span>
+          <span className="member-id">23L-3025</span>
         </div>
+        <div className="team-member">
+          <span className="member-name">Hassaan bin Saqib</span>
+          <span className="member-id">23L-3039</span>
+        </div>
+        <div className="team-member">
+          <span className="member-name">Umer Naseer</span>
+          <span className="member-id">23L-3040</span>
+        </div>
+        <div className="team-member">
+          <span className="member-name">Wzeea Sajid</span>
+          <span className="member-id">23L-3046</span>
+        </div>
+        <div className="team-member">
+          <span className="member-name">Maryam Irshad</span>
+          <span className="member-id">23L-3093</span>
+        </div>
+        <div className="team-member">
+          <span className="member-name">Abdul Hannan</span>
+          <span className="member-id">23L-3106</span>
+        </div>
+      </div>
+    </div>
+    
+    <p className="description">
+      We have made this app to help people plan their trip to Pakistan's famous and beautiful locations. 
+      Explore the cultural richness, breathtaking landscapes, and vibrant cities of Pakistan with ease.
+    </p>
+  </div>
+</div>
       </div>
     </div>
   );

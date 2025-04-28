@@ -491,7 +491,7 @@ const AdminSafetyGuidelines = () => {
           <div className="chart-container contacts-container">
             <div className="chart-header">
               <h2 className="chart-title">Emergency Contacts</h2>
-              
+
             </div>
             
             {editingContact.id === -1 && (editingContact.title !== "" || editingContact.number !== "") && (
