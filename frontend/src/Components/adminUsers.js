@@ -152,8 +152,8 @@ const AdminUsers = () => {
             <span className="label">Souvenirs</span>
           </button>
           <button
-              className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}
-              onClick={() => navigate('/safety-guidelines')}
+              className={`sidebar-button ${currentPath === '/adminSafetyGuidelines' ? 'active' : ''}`}
+              onClick={() => navigate('/adminSafetyGuidelines')}
             >
               <Shield className="icon" />
               <span className="label">Safety</span>

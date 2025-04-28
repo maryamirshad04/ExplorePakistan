@@ -56,7 +56,7 @@ const [cart, setCart] = useState([]);
           </button>
           <button
               className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}
-              onClick={() => navigate('/safety-guidelines')}
+              onClick={() => navigate('/safetyguidelines')}
             >
               <Shield className="icon" />
               <span className="label">Safety</span>
@@ -89,7 +89,12 @@ const [cart, setCart] = useState([]);
                     Experience the cultural heart of Pakistan with historic monuments,
                     vibrant food streets, and the magnificent Badshahi Mosque.
                   </p>
-                  <button className="explore-button">Explore Lahore</button>
+                  <button 
+                    className="explore-button" 
+                    onClick={() => navigate('/destinations')}
+                  >
+                    Explore Destinations
+                  </button>
                 </div>
               </div>
 
@@ -101,7 +106,12 @@ const [cart, setCart] = useState([]);
                     Visit Pakistan's beautiful capital city with its stunning Faisal Mosque,
                     lush green Margalla Hills, and modern cityscape.
                   </p>
-                  <button className="explore-button">Explore Islamabad</button>
+                  <button 
+                    className="explore-button" 
+                    onClick={() => navigate('/destinations')}
+                  >
+                    Explore Destinations
+                  </button>
                 </div>
               </div>
             </div>
