@@ -398,10 +398,7 @@ const AdminSouvenirs = () => {
               <div key={item.id} className="admin-souvenir-card">
                 <div className="card-image">
                   <img src={item.image} alt={item.name} />
-                  <div className="card-rating">
-                    <span>★</span>
-                    <span>{item.rating}</span>
-                  </div>
+                
                 </div>
                 
                 <div className="card-content">
@@ -413,7 +410,7 @@ const AdminSouvenirs = () => {
                     </div>
                   </div>
                   
-                  <p className="card-description">{item.description}</p>
+               
                   
                   <div className="card-tags">
                     {item.tags.map(tag => (
@@ -507,20 +504,7 @@ const AdminSouvenirs = () => {
                   </datalist>
                 </div>
                 
-                <div className="form-group">
-                  <label htmlFor="rating">Rating (1-5) *</label>
-                  <input
-                    type="number"
-                    id="rating"
-                    name="rating"
-                    min="1"
-                    max="5"
-                    step="0.1"
-                    value={newSouvenir.rating}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+            
                 
                 <div className="form-group">
                   <label htmlFor="price">Price (PKR) *</label>
@@ -535,18 +519,7 @@ const AdminSouvenirs = () => {
                   />
                 </div>
               </div>
-              
-              <div className="form-group full-width">
-                <label htmlFor="description">Description *</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  placeholder="Write a brief description about this souvenir"
-                  value={newSouvenir.description}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
+         
               
               <div className="form-group full-width">
                 <label htmlFor="location">Where to Find *</label>

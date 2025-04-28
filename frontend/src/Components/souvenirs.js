@@ -18,8 +18,8 @@ const Souvenirs = () => {
           description: "Traditional handcrafted leather shoes with intricate embroidery", 
           location: "Best found in the walled city of Lahore, especially in Shahi Mohalla where artisans have been crafting them for generations.",
           price: 1500,
-          image: "/api/placeholder/400/320",
-          rating: 4.8,
+         
+          
           tags: ["handicraft", "traditional", "clothing"]
         },
       /*  { 
@@ -53,8 +53,7 @@ const Souvenirs = () => {
           description: "Traditional block-printed textiles with unique patterns dating back 5,000 years", 
           location: "The town of Bhit Shah is renowned for its master Ajrak craftsmen who use natural dyes and traditional methods.",
           price: 1200,
-          image: "/api/placeholder/400/320",
-          rating: 4.9,
+         
           tags: ["textile", "traditional", "art"]
         },
       /*  { 
@@ -88,8 +87,7 @@ const Souvenirs = () => {
           description: "Handcrafted traditional sandals known for durability and distinctive design", 
           location: "The original craftsmen can be found in the Namak Mandi and Jahangirpura areas of Peshawar city.",
           price: 1800,
-          image: "/api/placeholder/400/320",
-          rating: 4.7,
+          
           tags: ["handicraft", "traditional", "clothing"]
         },
        /* { 
@@ -123,8 +121,7 @@ const Souvenirs = () => {
           description: "Intricate hand-embroidered textiles featuring mirror work and geometric patterns", 
           location: "The markets of Quetta showcase the finest examples, each piece taking months to complete by skilled artisans.",
           price: 3200,
-          image: "/api/placeholder/400/320",
-          rating: 4.9,
+         
           tags: ["textile", "traditional", "art"]
         },
        /* { 
@@ -158,8 +155,7 @@ const Souvenirs = () => {
           description: "Luxurious soft shawls made from mountain goat wool using ancient weaving methods", 
           location: "The high mountain villages near Skardu offer genuine pashmina directly from the families who raise the goats and weave the wool.",
           price: 6500,
-          image: "/api/placeholder/400/320",
-          rating: 5.0,
+          
           tags: ["textile", "luxury", "clothing"]
         },
        /* { 
@@ -359,10 +355,7 @@ const Souvenirs = () => {
                 <div key={item.id} className="souvenir-card">
                   <div className="card-image">
                     
-                    <div className="card-rating">
-                      <span>★</span>
-                      <span>{item.rating}</span>
-                    </div>
+                 
                   </div>
                   
                   <div className="card-content">
