@@ -137,10 +137,7 @@ const BudgetCalculator = () => {
           <div className="budget-container">
             <div className="budget-header">
               <h2 className="section-title">TRIP BUDGET ESTIMATOR</h2>
-              <button className="save-button">
-                <Calculator className="button-icon" />
-                <span>Save Estimate</span>
-              </button>
+              
             </div>
             
             {/* Travel Cart */}
