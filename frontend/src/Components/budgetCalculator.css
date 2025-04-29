@@ -207,6 +207,11 @@
   position: relative;
 }
 
+/* Ensure the cart table container has white background */
+.trip-budget-table .cart-table-container {
+  background-color: white;
+}
+
 /* Cart table */
 .cart-table {
   width: 100%;
@@ -214,9 +219,11 @@
   table-layout: fixed; /* Fixed table layout for consistent column widths */
 }
 
-/* Table header */
+/* Table header - completely reset and redefine */
 .table-header {
-  background-color: #bbf7d0;
+  background-color: white !important;
+  background: white !important;
+  border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -225,9 +232,11 @@
 .table-header th {
   padding: 1rem;
   font-weight: 600;
-  color: #065f46;
+  color: #065f46 !important;
   text-align: left;
   white-space: nowrap;
+  background-color: white !important;
+  background: white !important;
 }
 
 /* Cart item */
@@ -475,13 +484,20 @@
   overflow: auto;
   max-height: 400px; /* Adjust as needed */
   border-radius: 0.5rem;
+  background-color: white; /* Ensure entire table has white background */
 }
 
 .trip-budget-table .table-header {
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: #bbf7d0;
+  background-color: white; /* Changed to white from #bbf7d0 */
+}
+
+/* Ensure all table elements have white background */
+.trip-budget-table thead,
+.trip-budget-table thead tr {
+  background-color: white;
 }
 
 /* Column width adjustments */
@@ -623,16 +639,17 @@
   text-align: center;
 }
 
-/* Enhanced table with better alignment and styling */
-.trip-budget-table {
-  border-radius: 0.5rem;
-  overflow: hidden; /* Keep rounded corners visible */
+/* Specifically targeting the green background in the trip-budget-table */
+.trip-budget-table,
+.trip-budget-table > table,
+.trip-budget-table table {
+  background-color: white !important;
+  background: white !important;
 }
 
-.trip-budget-table table {
-  table-layout: fixed;
-  border-collapse: collapse;
-  width: 100%;
+/* Target every element within the table to be extra sure */
+.trip-budget-table * {
+  background-color: inherit;
 }
 
 /* Maintain sticky header */
@@ -640,19 +657,32 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  background-color: white !important;
 }
 
-/* Stronger green theme */
+/* Examining your screenshot more carefully, let's specifically target the table row */
+tr[role="row"],
+tr[role="row"] th,
+.trip-budget-table tr,
+.trip-budget-table tr th,
+.trip-budget-table > thead,
+.trip-budget-table > thead > tr,
+.trip-budget-table > thead > tr > th {
+  background-color: white !important;
+  background: white !important;
+}
+
+/* Changed to white background for header */
 .table-header {
-  background-color: #059669; /* Darker green for header */
+  background-color: white;
 }
 
 .trip-budget-table th {
   padding: 1rem;
   font-weight: 600;
-  color: white; /* White text for better contrast */
+  color: #065f46; /* Dark green text for contrast on white */
   text-align: left;
-  background-color: #059669; /* Match header background */
+  background-color: white; /* White background */
 }
 
 /* Alternating row colors for better readability */

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './TravelHistory.css';
-import { ShoppingCart,Shield, Home, Clock, Heart, Gift, Calendar, MapPin, Star } from 'lucide-react';
+import { ShoppingCart,Shield, Home, Clock, Heart, Gift, Calendar, MapPin, BarChart,Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const TravelHistory = () => {
@@ -85,6 +85,13 @@ const TravelHistory = () => {
           >
             <Gift className="icon" />
             <span className="label">Souvenirs</span>
+          </button>
+          <button
+            className={`sidebar-button ${currentPath === '/reports' ? 'active' : ''}`}
+            onClick={() => navigate('/reports')}
+          >
+            <BarChart className="icon" />
+            <span className="label">Reports</span>
           </button>
           <button
               className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}

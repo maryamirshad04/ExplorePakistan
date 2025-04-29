@@ -7,6 +7,7 @@ import TravelHistory from './Components/TravelHistory'; // Import TravelHistory
 import BudgetCalculator from './Components/budgetCalculator';
 import Destinations from './Components/destinations';  // Import BudgetCalculator
 import Souvenirs from './Components/souvenirs'; 
+import Reports from './Components/reports';
 import SafetyGuidelines from './Components/safetyGuidelines';
 import AdminDashboard from './Components/adminDashBoard'; 
 import AdminUsers from './Components/adminUsers';
@@ -14,6 +15,7 @@ import AdminDestinations from './Components/adminDestinations';
 import AdminSouvenirs from './Components/adminSouvenirs';
 import AdminSafetyGuidelines from './Components/adminSafetyGuidelines';
 import React from 'react';
+
 
 
 
@@ -90,6 +92,7 @@ function App() {
                 <Route path="/budget" element={<BudgetCalculator />} />
                 <Route path="/destinations" element={<Destinations />} />
                 <Route path="/souvenirs" element={<Souvenirs />} />
+                <Route path="/reports" element={<Reports />} />
                 <Route path="/safety-guidelines" element={<SafetyGuidelines />} />
                 <Route path="/adminDashBoard" element={<AdminDashboard  />} />
                 <Route path="/adminUsers" element={<AdminUsers />} />

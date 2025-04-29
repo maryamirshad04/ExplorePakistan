@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
 import './userDashBoard.css';
-import { ShoppingCart, Shield, Home, Clock, Heart, Gift } from 'lucide-react';
+import { BarChart,ShoppingCart, Shield, Home, Clock, Heart, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ExplorePakistan = () => {
@@ -162,6 +162,13 @@ const ExplorePakistan = () => {
           >
             <Gift className="icon" />
             <span className="label">Souvenirs</span>
+          </button>
+          <button
+            className={`sidebar-button ${currentPath === '/reports' ? 'active' : ''}`}
+            onClick={() => navigate('/reports')}
+          >
+            <BarChart className="icon" />
+            <span className="label">Reports</span>
           </button>
           <button
             className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}

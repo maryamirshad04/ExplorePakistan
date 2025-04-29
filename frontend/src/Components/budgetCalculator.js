@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './budgetCalculator.css';
-import { ShoppingCart,Shield, Home, Clock, Heart, Gift, Trash2, Plus, Minus, Calculator } from 'lucide-react';
+import { ShoppingCart,BarChart,Shield, Home, Clock, Heart, Gift, Trash2, Plus, Minus, Calculator } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const BudgetCalculator = () => {
@@ -112,6 +112,13 @@ const BudgetCalculator = () => {
           >
             <Gift className="icon" />
             <span className="label">Souvenirs</span>
+          </button>
+          <button
+            className={`sidebar-button ${currentPath === '/reports' ? 'active' : ''}`}
+            onClick={() => navigate('/reports')}
+          >
+            <BarChart className="icon" />
+            <span className="label">Reports</span>
           </button>
           <button
               className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}
@@ -266,7 +273,8 @@ const BudgetCalculator = () => {
                     Proceed to Checkout
                   </button>
                   
-                  <button className="add-more-button">
+                  <button className="add-more-button"
+                  onClick={() => navigate('/destinations')}>
                     Add More Destinations
                   </button>
                 </div>
