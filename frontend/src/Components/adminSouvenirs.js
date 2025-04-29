@@ -435,7 +435,6 @@ const AdminSouvenirs = () => {
                         type="button"
                       >
                         <Trash2 className="trash-icon" />
-                        Delete
                       </button>
                     </div>
                   </div>

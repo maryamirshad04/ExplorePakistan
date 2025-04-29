@@ -181,43 +181,6 @@ const travelPlansData = [
             </div>
           </div>
 
-          {/* Travel Plans Chart */}
-          <div className="chart-container">
-            <div className="chart-header">
-              <h2 className="chart-title">Travel Plans Report</h2>
-              <div className="chart-actions">
-                <select className="chart-select">
-                  <option value="thisMonth">This Month</option>
-                  <option value="lastMonth">Last Month</option>
-                  <option value="thisYear">This Year</option>
-                </select>
-              </div>
-            </div>
-            <div className="chart-content">
-              <div className="chart-visualization">
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={monthlyBookings}>
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                    <Bar dataKey="bookings" fill="#36A2EB" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="pie-chart-legend">
-                {travelPlansData.map((item, index) => (
-                  <div key={index} className="legend-item">
-                    <div className={`legend-color color-${index + 1}`} style={{backgroundColor: item.color}}></div>
-                    <div className="legend-detail">
-                      <span className="legend-name">{item.destination}</span>
-                      <span className="legend-value">{item.bookings} bookings</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Recent Bookings */}
