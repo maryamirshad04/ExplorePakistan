@@ -221,7 +221,7 @@ if (isNaN(priceValue) || priceValue <= 0) {
 
   const handleDelete = async (item) => {
     try {
-      await axios.delete(`http://localhost:8080/api/souvenirs/${item.name}`);
+      await axios.delete(`http://localhost:8080/api/souvenirs/${item.id}`);
       await fetchData();
       showNotification("Souvenir deleted successfully", "success");
     } catch (err) {
@@ -383,7 +383,7 @@ if (isNaN(priceValue) || priceValue <= 0) {
                         onClick={() => handleDelete(item)}
                       >
                         <Trash2 className="trash-icon" />
-                        Delete
+                      
                       </button>
                     </div>
                   </div>
