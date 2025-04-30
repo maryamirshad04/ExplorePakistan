@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './budgetCalculator.css';
 import { ShoppingCart, BarChart, Shield, Home, Clock, Heart, Gift, Trash2, Plus, Minus, Star, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { auth } from "./firebaseConfig";
+// API base URL - change this to match your backend URL
+const API_BASE_URL = 'http://localhost:8080/api/budget-calculations';
 
 const BudgetCalculator = () => {
   const navigate = useNavigate();
@@ -12,8 +15,11 @@ const BudgetCalculator = () => {
   const [showRatingPopup, setShowRatingPopup] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [userId, setUserId] = useState('auth'); // In a real app, this would come from auth
 
-  // Sample travel cart items
+  // Sample travel cart items as initial state
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -40,6 +46,168 @@ const BudgetCalculator = () => {
       activityCosts: 120
     }
   ]);
+
+  // Saved budget calculations from backend
+  const [savedCalculations, setSavedCalculations] = useState([]);
+
+  // Load user's saved calculations on component mount
+  useEffect(() => {
+    fetchUserCalculations();
+  }, []);
+
+  // Fetch user's saved budget calculations
+  const fetchUserCalculations = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE_URL}/user/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setSavedCalculations(data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch user calculations:", err);
+      setError("Failed to load saved calculations. Please try again later.");
+      setLoading(false);
+    }
+  };
+
+  // Calculate temporary budget without saving
+  const calculateTemporaryBudget = async () => {
+    try {
+      // Convert cart items to format expected by backend
+      const destinationIds = cartItems.map(item => item.destination);
+      
+      // Calculate average daily allowance from all items
+      const totalDailyExpenses = cartItems.reduce((sum, item) => sum + item.pricePerDay, 0);
+      const avgDailyAllowance = totalDailyExpenses / cartItems.length;
+      
+      // Sum up all durations
+      const totalDuration = cartItems.reduce((sum, item) => sum + item.duration, 0);
+      
+      // Sum up all costs
+      const totalAccommodation = cartItems.reduce((sum, item) => sum + item.accommodationCost, 0);
+      const totalTransport = cartItems.reduce((sum, item) => sum + item.transportCost, 0);
+      const totalActivities = cartItems.reduce((sum, item) => sum + item.activityCosts, 0);
+      
+      const budgetData = {
+        userId: userId,
+        destinationIds: destinationIds,
+        dailyAllowance: avgDailyAllowance,
+        tripDurationDays: totalDuration,
+        accommodationCost: totalAccommodation,
+        transportCost: totalTransport,
+        activityCosts: totalActivities,
+        notes: `Trip to ${destinationIds.join(', ')}`
+      };
+      
+      setLoading(true);
+      const response = await fetch(`${API_BASE_URL}/calculate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(budgetData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log("Calculated budget:", result);
+      setLoading(false);
+      return result.totalBudget;
+      
+    } catch (err) {
+      console.error("Failed to calculate budget:", err);
+      setError("Failed to calculate budget. Please try again.");
+      setLoading(false);
+      return null;
+    }
+  };
+
+  // Save budget calculation to backend
+  const saveBudgetCalculation = async () => {
+    try {
+      // Convert cart items to format expected by backend
+      const destinationIds = cartItems.map(item => item.destination);
+      
+      // Calculate average daily allowance from all items
+      const totalDailyExpenses = cartItems.reduce((sum, item) => sum + item.pricePerDay, 0);
+      const avgDailyAllowance = totalDailyExpenses / cartItems.length;
+      
+      // Sum up all durations
+      const totalDuration = cartItems.reduce((sum, item) => sum + item.duration, 0);
+      
+      // Sum up all costs
+      const totalAccommodation = cartItems.reduce((sum, item) => sum + item.accommodationCost, 0);
+      const totalTransport = cartItems.reduce((sum, item) => sum + item.transportCost, 0);
+      const totalActivities = cartItems.reduce((sum, item) => sum + item.activityCosts, 0);
+      
+      const budgetData = {
+        userId: userId,
+        destinationIds: destinationIds,
+        dailyAllowance: avgDailyAllowance,
+        tripDurationDays: totalDuration,
+        accommodationCost: totalAccommodation,
+        transportCost: totalTransport,
+        activityCosts: totalActivities,
+        notes: `Trip to ${destinationIds.join(', ')}`
+      };
+      
+      setLoading(true);
+      const response = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(budgetData)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      
+      const savedCalculation = await response.json();
+      setSavedCalculations([savedCalculation, ...savedCalculations]);
+      setLoading(false);
+      
+      return savedCalculation;
+      
+    } catch (err) {
+      console.error("Failed to save budget calculation:", err);
+      setError("Failed to save budget calculation. Please try again.");
+      setLoading(false);
+      return null;
+    }
+  };
+
+  // Delete a saved calculation
+  const deleteSavedCalculation = async (calculatorId) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE_URL}/${calculatorId}`, {
+        method: 'DELETE'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      
+      // Remove from local state
+      setSavedCalculations(savedCalculations.filter(calc => calc.calculatorId !== calculatorId));
+      setLoading(false);
+      
+    } catch (err) {
+      console.error("Failed to delete calculation:", err);
+      setError("Failed to delete calculation. Please try again.");
+      setLoading(false);
+    }
+  };
 
   // Function to calculate subtotal for an item
   const calculateItemTotal = (item) => {
@@ -76,13 +244,18 @@ const BudgetCalculator = () => {
   };
 
   // Handle checkout process
-  const handleCheckout = () => {
-    setShowThankYou(true);
+  const handleCheckout = async () => {
+    // Save the calculation to the backend
+    const savedCalculation = await saveBudgetCalculation();
     
-    // Show rating popup after 2 seconds
-    setTimeout(() => {
-      setShowRatingPopup(true);
-    }, 2000);
+    if (savedCalculation) {
+      setShowThankYou(true);
+      
+      // Show rating popup after 2 seconds
+      setTimeout(() => {
+        setShowRatingPopup(true);
+      }, 2000);
+    }
   };
 
   // Handle rating submission
@@ -175,6 +348,21 @@ const BudgetCalculator = () => {
             <span className="cart-count">{cartItems.length}</span>
           </button>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="error-message">
+            {error}
+            <button onClick={() => setError(null)} className="close-error">×</button>
+          </div>
+        )}
+        
+        {/* Loading Indicator */}
+        {loading && (
+          <div className="loading-indicator">
+            Processing your request...
+          </div>
+        )}
 
         <div className="budget-section">
           <div className="budget-container">
@@ -304,17 +492,58 @@ const BudgetCalculator = () => {
                     <span>{formatCurrency(calculateCartTotal() * 1.05 + 50)}</span>
                   </div>
                   
-                  <button className="checkout-button" onClick={handleCheckout}>
-                    Proceed to Checkout
+                  <button className="checkout-button" onClick={handleCheckout} disabled={loading || cartItems.length === 0}>
+                    {loading ? 'Processing...' : 'Proceed to Checkout'}
                   </button>
                   
                   <button className="add-more-button"
                   onClick={() => navigate('/destinations')}>
                     Add More Destinations
                   </button>
+
+                  <button className="save-calculation-button"
+                  onClick={saveBudgetCalculation} disabled={loading || cartItems.length === 0}>
+                    Save Calculation
+                  </button>
                 </div>
               </div>
             </div>
+
+            {/* Saved Calculations Section */}
+            {savedCalculations.length > 0 && (
+              <div className="saved-calculations-section">
+                <h3 className="section-title">Saved Calculations</h3>
+                <div className="saved-items-container">
+                  {savedCalculations.map((calc) => (
+                    <div key={calc.calculatorId} className="saved-calculation-item">
+                      <div className="saved-item-header">
+                        <h4>{calc.notes || `Trip (${calc.calculatorId.substring(0, 8)})`}</h4>
+                        <button 
+                          onClick={() => deleteSavedCalculation(calc.calculatorId)}
+                          className="delete-saved-button"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                      <div className="saved-item-details">
+                        <div className="saved-item-row">
+                          <span>Destinations:</span>
+                          <span>{calc.destinationIds.join(', ')}</span>
+                        </div>
+                        <div className="saved-item-row">
+                          <span>Duration:</span>
+                          <span>{calc.tripDurationDays} days</span>
+                        </div>
+                        <div className="saved-item-row">
+                          <span>Total Budget:</span>
+                          <span>{formatCurrency(calc.totalBudget)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
