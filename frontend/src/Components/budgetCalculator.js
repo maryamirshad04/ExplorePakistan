@@ -17,7 +17,26 @@ const BudgetCalculator = () => {
   const [hoverRating, setHoverRating] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [userId, setUserId] = useState('auth'); // In a real app, this would come from auth
+  const [userId, setUserId] = useState(null); // Initialize userId as null
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          setUserId(user.uid); // Set userId from the authenticated user
+        } else {
+          console.error("User is not authenticated");
+          setError("User is not authenticated. Please log in.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch user ID:", err);
+        setError("Failed to fetch user ID. Please try again.");
+      }
+    };
+
+    fetchUserId();
+  }, []);
 
   // Sample travel cart items as initial state
   const [cartItems, setCartItems] = useState([
