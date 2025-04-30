@@ -3,6 +3,7 @@ import './adminDashBoard.css';
 import { Home, BarChart2, Users,Shield , Map, Gift, DollarSign, Briefcase, PieChart, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer, Line, BarChart, Bar, Cell, Pie } from 'recharts';
+import { fetchUserStats, fetchMonthlySignups } from './adminService';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -47,24 +48,27 @@ const AdminDashboard = () => {
     }
   ]);
 
-  // Data for signup statistics
-  const signupData = [
+  // State for signup statistics
+  const [signupData, setSignupData] = useState([
     { month: 'Nov', signups: 15 },
     { month: 'Dec', signups: 22 },
     { month: 'Jan', signups: 18 },
     { month: 'Feb', signups: 27 },
     { month: 'Mar', signups: 35 },
     { month: 'Apr', signups: 42 }
-  ];
+  ]);
+
+  // State for selected time period
+  const [signupPeriod, setSignupPeriod] = useState('6months');
 
   // Data for travel plans statistics
-const travelPlansData = [
+  const travelPlansData = [
     { destination: "Hunza Valley", bookings: 138, color: "#FF6384" },
     { destination: "Lahore", bookings: 126, color: "#36A2EB" },
     { destination: "Swat Valley", bookings: 97, color: "#FFCE56" },
     { destination: "Islamabad", bookings: 83, color: "#4BC0C0" },
     { destination: "Karachi", bookings: 72, color: "#9966FF" }
-];
+  ];
 
   const monthlyBookings = [
     { month: "Nov", bookings: 42 },
@@ -74,6 +78,72 @@ const travelPlansData = [
     { month: "Mar", bookings: 79 },
     { month: "Apr", bookings: 92 }
   ];
+
+  // Calculate percentage change in signups from last month
+  const calculateSignupGrowth = (data) => {
+    if (data.length < 2) return 0;
+    
+    const currentMonth = data[data.length - 1].signups;
+    const previousMonth = data[data.length - 2].signups;
+    
+    if (previousMonth === 0) return 100; // If previous month was 0, show 100% growth
+    
+    return Math.round(((currentMonth - previousMonth) / previousMonth) * 100);
+  };
+
+  // Fetch user stats and signup data
+  useEffect(() => {
+    const loadUserStats = async () => {
+      try {
+        const userStatsData = await fetchUserStats();
+        
+        if (userStatsData) {
+          // Update total users count
+          setStats(prevStats => ({
+            ...prevStats,
+            totalUsers: userStatsData.totalUsers || prevStats.totalUsers
+          }));
+          
+          // Update signup data if available
+          if (userStatsData.monthlySignups && userStatsData.monthlySignups.length > 0) {
+            setSignupData(userStatsData.monthlySignups);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load user statistics:", error);
+      }
+    };
+    
+    loadUserStats();
+  }, []);
+
+  // Handle signup period change
+  const handleSignupPeriodChange = async (e) => {
+    const period = e.target.value;
+    setSignupPeriod(period);
+    
+    // Convert selection to number of months
+    let months = 6;
+    switch (period) {
+      case '12months':
+        months = 12;
+        break;
+      case 'year':
+        months = new Date().getMonth() + 1; // Months since beginning of year
+        break;
+      default:
+        months = 6;
+    }
+    
+    try {
+      const data = await fetchMonthlySignups(months);
+      if (data && data.length > 0) {
+        setSignupData(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch monthly signups:", error);
+    }
+  };
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -143,7 +213,11 @@ const travelPlansData = [
             <div className="chart-header">
               <h2 className="chart-title">User Signup Report</h2>
               <div className="chart-actions">
-                <select className="chart-select">
+                <select 
+                  className="chart-select"
+                  value={signupPeriod}
+                  onChange={handleSignupPeriodChange}
+                >
                   <option value="6months">Last 6 Months</option>
                   <option value="12months">Last 12 Months</option>
                   <option value="year">This Year</option>
@@ -171,9 +245,9 @@ const travelPlansData = [
               </div>
               <div className="chart-info">
                 <div className="info-item">
-                  <TrendingUp className="info-icon positive" />
+                  <TrendingUp className={`info-icon ${calculateSignupGrowth(signupData) >= 0 ? 'positive' : 'negative'}`} />
                   <div className="info-content">
-                    <h4 className="info-value">+20%</h4>
+                    <h4 className="info-value">{calculateSignupGrowth(signupData) >= 0 ? '+' : ''}{calculateSignupGrowth(signupData)}%</h4>
                     <p className="info-label">from last month</p>
                   </div>
                 </div>
