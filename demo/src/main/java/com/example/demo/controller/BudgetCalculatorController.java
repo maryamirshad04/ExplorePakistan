@@ -107,4 +107,15 @@ public class BudgetCalculatorController {
             return ResponseEntity.internalServerError().body("Error calculating budget: " + e.getMessage());
         }
     }
+
+    @PostMapping("/save-travel-plan")
+    public ResponseEntity<?> saveTravelPlan(@RequestBody BudgetCalculator calculator) {
+        try {
+            // Save the travel plan in the database
+            budgetCalculatorService.saveTravelPlan(calculator);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Travel plan saved successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error saving travel plan: " + e.getMessage());
+        }
+    }
 }

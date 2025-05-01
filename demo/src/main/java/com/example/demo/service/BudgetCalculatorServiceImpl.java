@@ -56,8 +56,11 @@ public class BudgetCalculatorServiceImpl implements BudgetCalculatorService {
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
         List<BudgetCalculator> calculations = new ArrayList<>();
 
-        // Ensure the rating field is included in the retrieved data
+        // Debugging log to check query results
+        System.out.println("Fetching budget calculations for userId: " + userId);
+
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            System.out.println("Document found: " + document.getId() + " => " + document.getData());
             BudgetCalculator calculator = document.toObject(BudgetCalculator.class);
             if (document.contains("rating")) {
                 calculator.setRating(document.getLong("rating").intValue());
@@ -65,6 +68,7 @@ public class BudgetCalculatorServiceImpl implements BudgetCalculatorService {
             calculations.add(calculator);
         }
 
+        System.out.println("Total calculations fetched: " + calculations.size());
         return calculations;
     }
 
@@ -142,6 +146,36 @@ public class BudgetCalculatorServiceImpl implements BudgetCalculatorService {
         }
 
         return calculations;
+    }
+
+    @Override
+    public void saveTravelPlan(BudgetCalculator calculator) {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference budgetDocRef = dbFirestore.collection(COLLECTION_NAME).document();
+        DocumentReference travelHistoryDocRef = dbFirestore.collection("travelHistories").document();
+
+        // Set the ID and calculate total before saving
+        calculator.setCalculatorId(budgetDocRef.getId());
+        calculator.setTotalBudget(calculateTotal(calculator));
+
+        try {
+            // Save to budgetCalculations collection
+            ApiFuture<WriteResult> budgetWriteResult = budgetDocRef.set(calculator);
+            budgetWriteResult.get();
+
+            // Save to travelHistories collection
+            Map<String, Object> travelHistoryMap = new HashMap<>();
+            travelHistoryMap.put("id", travelHistoryDocRef.getId());
+            travelHistoryMap.put("userId", calculator.getUserId());
+            travelHistoryMap.put("destinationIds", calculator.getDestinationIds());
+            travelHistoryMap.put("tripDurationDays", calculator.getTripDurationDays());
+            travelHistoryMap.put("subtotal", calculator.getTotalBudget()); // Include subtotal
+
+            ApiFuture<WriteResult> travelHistoryWriteResult = travelHistoryDocRef.set(travelHistoryMap);
+            travelHistoryWriteResult.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Error saving travel plan: " + e.getMessage(), e);
+        }
     }
 
     // Helper method to calculate total budget

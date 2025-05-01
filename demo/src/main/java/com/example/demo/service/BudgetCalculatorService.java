@@ -62,4 +62,10 @@ public interface BudgetCalculatorService {
      * @return List of all BudgetCalculators
      */
     List<BudgetCalculator> getAllBudgetCalculations() throws ExecutionException, InterruptedException;
+
+    /**
+     * Saves a travel plan from the budget calculator
+     * @param calculator The budget calculator data to save as a travel plan
+     */
+    void saveTravelPlan(BudgetCalculator calculator);
 }

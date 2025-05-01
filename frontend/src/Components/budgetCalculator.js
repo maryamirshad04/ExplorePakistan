@@ -268,16 +268,48 @@ const BudgetCalculator = () => {
 
   // Handle checkout process
   const handleCheckout = async () => {
-    // Save the calculation to the backend
-    const savedCalculation = await saveBudgetCalculation();
-    
-    if (savedCalculation) {
-      setShowThankYou(true);
-      
-      // Show rating popup after 2 seconds
-      setTimeout(() => {
-        setShowRatingPopup(true);
-      }, 2000);
+    try {
+      // Save the calculation to the backend
+      const savedCalculation = await saveBudgetCalculation();
+
+      if (savedCalculation) {
+        alert('Your budget has been saved successfully!'); // Notify the user
+
+        // Save travel plan using the API
+        const travelPlanData = {
+          userId: userId,
+          destination: savedCalculation.destinationIds.join(', '),
+          startDate: new Date().toISOString(), // Placeholder start date
+          endDate: new Date().toISOString(), // Placeholder end date
+          durationDays: savedCalculation.tripDurationDays,
+          highlights: [], // Add highlights if available
+          rating: 0, // Default rating
+          imageUrls: [],
+          notes: savedCalculation.notes,
+        };
+
+        const response = await fetch(`${API_BASE_URL}/save-travel-plan`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(travelPlanData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to save travel plan');
+        }
+
+        setShowThankYou(true);
+
+        // Show rating popup after 2 seconds
+        setTimeout(() => {
+          setShowRatingPopup(true);
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Error during checkout:', err);
+      setError('Failed to complete checkout. Please try again.');
     }
   };
 
