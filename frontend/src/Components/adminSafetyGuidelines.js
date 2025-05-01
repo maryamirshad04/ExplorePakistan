@@ -476,10 +476,7 @@ const AdminSafetyGuidelines = () => {
           <div className="chart-container contacts-container">
             <div className="chart-header">
               <h2 className="chart-title">Emergency Contacts</h2>
-              <div className="info-message">
-                <p>Emergency contacts are hardcoded and only editable in the local state.</p>
-                <p>Changes to these contacts will not persist after page refresh or affect the user view.</p>
-              </div>
+              
             </div>
             
             {editingContact.id !== "" && (
@@ -564,20 +561,7 @@ const AdminSafetyGuidelines = () => {
                         <p className="contact-number">{contact.number}</p>
                       </div>
                       <div className="contact-actions">
-                        <button 
-                          className="action-btn edit-btn"
-                          onClick={() => startEditingContact(contact)}
-                          title="Edit Contact"
-                        >
-                          <Edit size={16} className="action-icon" />
-                        </button>
-                        <button 
-                          className="action-btn delete-btn"
-                          onClick={() => confirmDeleteContact(contact.id)}
-                          title="Delete Contact"
-                        >
-                          <Trash2 size={16} className="action-icon" />
-                        </button>
+                      
                       </div>
                     </>
                   )}
@@ -585,12 +569,7 @@ const AdminSafetyGuidelines = () => {
               ))}
             </div>
             
-            <button 
-              className="add-contact-button"
-              onClick={addEmergencyContact}
-            >
-              <Plus size={16} /> Add Contact
-            </button>
+           
           </div>
         </div>
         
