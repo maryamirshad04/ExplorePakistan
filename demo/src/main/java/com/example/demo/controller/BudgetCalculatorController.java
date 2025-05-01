@@ -52,6 +52,16 @@ public class BudgetCalculatorController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllBudgetCalculations() {
+        try {
+            List<BudgetCalculator> calculations = budgetCalculatorService.getAllBudgetCalculations();
+            return ResponseEntity.ok(calculations);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching budget calculations: " + e.getMessage());
+        }
+    }
+
     @PutMapping("/{calculatorId}")
     public ResponseEntity<?> updateBudgetCalculation(
             @PathVariable String calculatorId,
@@ -75,6 +85,16 @@ public class BudgetCalculatorController {
             return ResponseEntity.internalServerError().body("Error deleting budget calculation: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<?> deleteBudgetCalculationsByUser(@PathVariable String userId) {
+        try {
+            String result = budgetCalculatorService.deleteBudgetCalculationsByUser(userId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting user's budget calculations: " + e.getMessage());
         }
     }
 

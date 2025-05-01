@@ -13,6 +13,7 @@ public class BudgetCalculator {
     private double transportCost;
     private double activityCosts;
     private String notes;
+    private int rating; // Rating given by the user
 
     // Default constructor
     public BudgetCalculator() {}
@@ -120,5 +121,13 @@ public class BudgetCalculator {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }

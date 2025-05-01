@@ -44,9 +44,22 @@ public interface BudgetCalculatorService {
     String deleteBudgetCalculation(String calculatorId) throws ExecutionException, InterruptedException;
 
     /**
+     * Deletes all budget calculations for a specific user
+     * @param userId The ID of the user
+     * @return Success message
+     */
+    String deleteBudgetCalculationsByUser(String userId) throws ExecutionException, InterruptedException;
+
+    /**
      * Calculates a temporary budget without saving to database
      * @param calculator The budget parameters to calculate
      * @return The calculated BudgetCalculator with totals
      */
     BudgetCalculator calculateTemporaryBudget(BudgetCalculator calculator);
+
+    /**
+     * Retrieves all budget calculations
+     * @return List of all BudgetCalculators
+     */
+    List<BudgetCalculator> getAllBudgetCalculations() throws ExecutionException, InterruptedException;
 }

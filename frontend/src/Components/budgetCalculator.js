@@ -38,33 +38,37 @@ const BudgetCalculator = () => {
     fetchUserId();
   }, []);
 
-  // Sample travel cart items as initial state
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      destination: "Lahore",
-      duration: 3,
-      accommodation: "4-Star Hotel",
-      transportType: "Domestic Flight",
-      activities: ["City Tour", "Food Street Experience"],
-      pricePerDay: 120,
-      accommodationCost: 300,
-      transportCost: 150,
-      activityCosts: 80
-    },
-    {
-      id: 2,
-      destination: "Hunza Valley",
-      duration: 4,
-      accommodation: "Luxury Resort",
-      transportType: "Private Car",
-      activities: ["Hiking", "Boat Ride at Attabad Lake", "Baltit Fort Visit"],
-      pricePerDay: 150,
-      accommodationCost: 600,
-      transportCost: 350,
-      activityCosts: 120
+  // Ensure cart items are initialized with valid data
+  const [cartItems, setCartItems] = useState([]);
+
+  // Ensure cart items are loaded and validated properly with fallback logic
+  useEffect(() => {
+    const savedCart = localStorage.getItem('travelCart');
+    if (savedCart) {
+      try {
+        const parsedCart = JSON.parse(savedCart);
+        const validatedCart = parsedCart.map(item => {
+          const dailyExpenses = item.pricePerDay || 0; // Default pricePerDay to 0 if missing
+          return {
+            ...item,
+            destination: item.destination || item.name || "Explore Destination", // Use `name` if `destination` is missing
+            accommodation: item.accommodation || "Luxury Hotel", // Fallback for accommodation
+            transportType: item.transportType || "Explore Pakistan Travel & Tours", // Fallback for transport type
+            activities: item.activities && item.activities.length > 0 ? item.activities : ["Local Activities Provided"], // Fallback for activities
+            duration: item.duration || 1, // Default duration to 1 if missing
+            pricePerDay: dailyExpenses, // Default pricePerDay to 0 if missing
+            accommodationCost: item.accommodationCost || dailyExpenses / 2, // Fallback to half of daily expenses
+            transportCost: item.transportCost || 1000, // Default transportCost to 0 if missing
+            activityCosts: item.activityCosts || dailyExpenses / 5 // Fallback to one fifth of daily expenses
+          };
+        });
+        setCartItems(validatedCart);
+      } catch (error) {
+        console.error("Failed to parse cart data:", error);
+        localStorage.removeItem('travelCart');
+      }
     }
-  ]);
+  }, []);
 
   // Saved budget calculations from backend
   const [savedCalculations, setSavedCalculations] = useState([]);

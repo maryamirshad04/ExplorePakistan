@@ -56,8 +56,13 @@ public class BudgetCalculatorServiceImpl implements BudgetCalculatorService {
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
         List<BudgetCalculator> calculations = new ArrayList<>();
 
+        // Ensure the rating field is included in the retrieved data
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            calculations.add(document.toObject(BudgetCalculator.class));
+            BudgetCalculator calculator = document.toObject(BudgetCalculator.class);
+            if (document.contains("rating")) {
+                calculator.setRating(document.getLong("rating").intValue());
+            }
+            calculations.add(calculator);
         }
 
         return calculations;
@@ -105,10 +110,38 @@ public class BudgetCalculatorServiceImpl implements BudgetCalculatorService {
     }
 
     @Override
+    public String deleteBudgetCalculationsByUser(String userId) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        Query query = dbFirestore.collection(COLLECTION_NAME).whereEqualTo("userId", userId);
+
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+        List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+        for (QueryDocumentSnapshot document : documents) {
+            document.getReference().delete();
+        }
+
+        return "All budget calculations for user " + userId + " have been deleted successfully.";
+    }
+
+    @Override
     public BudgetCalculator calculateTemporaryBudget(BudgetCalculator calculator) {
         // Perform calculation without saving to database
         calculator.setTotalBudget(calculateTotal(calculator));
         return calculator;
+    }
+
+    @Override
+    public List<BudgetCalculator> getAllBudgetCalculations() throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> querySnapshot = dbFirestore.collection(COLLECTION_NAME).get();
+
+        List<BudgetCalculator> calculations = new ArrayList<>();
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            calculations.add(document.toObject(BudgetCalculator.class));
+        }
+
+        return calculations;
     }
 
     // Helper method to calculate total budget
