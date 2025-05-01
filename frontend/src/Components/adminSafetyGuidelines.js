@@ -2,68 +2,59 @@ import React, { useState, useEffect } from 'react';
 import './adminSafetyGuidelines.css';
 import { Home, Users, Map, Gift, Shield, Search, Trash2, Edit, Plus, Save, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const AdminSafetyGuidelines = () => {
   const navigate = useNavigate();
   const currentPath = window.location.pathname.toLowerCase();
   
-  // Initial state with sample data
-  const [guidelines, setGuidelines] = useState({
-    "General Safety": [
-      "Always keep copies of important documents like passport and visa",
-      "Register with your embassy or consulate upon arrival",
-      "Stay updated with local news and travel advisories",
-      "Purchase comprehensive travel insurance before your trip",
-      "Share your itinerary with family or friends"
-    ],
-    "Health Precautions": [
-      "Carry a basic first aid kit with necessary medications",
-      "Drink only bottled or purified water",
-      "Be cautious with street food and uncooked items",
-      "Protect yourself from mosquitoes in rural areas",
-      "Know the location of the nearest hospital or medical facility"
-    ],
-    "Transportation Safety": [
-      "Use reputable transportation services",
-      "Avoid traveling alone at night in unfamiliar areas",
-      "Keep emergency contact numbers handy",
-      "Be extra cautious when crossing roads in busy cities",
-      "Consider hiring local guides for remote locations"
-    ],
-    "Cultural Awareness": [
-      "Respect local customs and dress modestly, especially at religious sites",
-      "Ask permission before photographing people",
-      "Learn basic phrases in Urdu or local languages",
-      "Be mindful of local religious practices and holidays",
-      "Remove shoes when entering mosques and homes"
-    ]
-  });
-
+  // Hardcoded emergency contacts
   const [emergencyContacts, setEmergencyContacts] = useState([
-    { id: 1, title: "Police", number: "15" },
-    { id: 2, title: "Ambulance", number: "1122" },
-    { id: 3, title: "Tourist Police", number: "1422" },
-    { id: 4, title: "Highway Emergency", number: "130" }
+    { id: "1", title: "Police", number: "15" },
+    { id: "2", title: "Ambulance", number: "1122" },
+    { id: "3", title: "Tourism Police", number: "+92-310-5888888" },
+    { id: "4", title: "Fire Brigade", number: "16" },
+    { id: "5", title: "Tourist Helpline", number: "+92-51-9204444" }
   ]);
 
+  const [guidelines, setGuidelines] = useState({});
+  const [loading, setLoading] = useState(true);
+  
   // States for editing
   const [editingCategory, setEditingCategory] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
   const [editingItem, setEditingItem] = useState({ category: "", index: -1, text: "" });
-  const [editingContact, setEditingContact] = useState({ id: -1, title: "", number: "" });
+  const [editingContact, setEditingContact] = useState({ id: "", title: "", number: "" });
   
   // State for deletion confirmation
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     show: false,
-    type: "", // "category", "item", or "contact"
+    type: "",
     category: "",
     index: -1,
-    id: -1
+    id: ""
   });
   
   // State for search functionality
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredCategories, setFilteredCategories] = useState(Object.keys(guidelines));
+  const [filteredCategories, setFilteredCategories] = useState([]);
+
+  // Fetch guidelines data from backend
+  useEffect(() => {
+    const fetchSafetyData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/safety');
+        if (response.data) {
+          setGuidelines(response.data.guidelines || {});
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching safety guidelines:', error);
+        setLoading(false);
+      }
+    };
+    fetchSafetyData();
+  }, []);
 
   // Filter guidelines based on search term
   useEffect(() => {
@@ -71,12 +62,9 @@ const AdminSafetyGuidelines = () => {
       setFilteredCategories(Object.keys(guidelines));
     } else {
       const results = Object.keys(guidelines).filter(category => {
-        // Check if category name matches
         if (category.toLowerCase().includes(searchTerm.toLowerCase())) {
           return true;
         }
-        
-        // Check if any item in the category matches
         return guidelines[category].some(item => 
           item.toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -84,6 +72,19 @@ const AdminSafetyGuidelines = () => {
       setFilteredCategories(results);
     }
   }, [searchTerm, guidelines]);
+
+  // Save all changes to backend (only guidelines)
+  const saveAllChanges = async () => {
+    try {
+      await axios.post('http://localhost:8080/api/safety', {
+        guidelines
+        // No longer sending emergencyContacts to backend
+      });
+      alert("All changes saved successfully!");
+    } catch (error) {
+      alert("Error saving changes: " + error.message);
+    }
+  };
   
   // Functions for category management
   const addCategory = () => {
@@ -102,7 +103,7 @@ const AdminSafetyGuidelines = () => {
       type: "category",
       category: category,
       index: -1,
-      id: -1
+      id: ""
     });
   };
   
@@ -116,7 +117,7 @@ const AdminSafetyGuidelines = () => {
       type: "",
       category: "",
       index: -1,
-      id: -1
+      id: ""
     });
   };
   
@@ -146,10 +147,8 @@ const AdminSafetyGuidelines = () => {
       const updatedGuidelines = { ...guidelines };
       
       if (editingItem.index === -1) {
-        // Adding new item
         updatedGuidelines[editingItem.category] = [...updatedGuidelines[editingItem.category], editingItem.text];
       } else {
-        // Editing existing item
         updatedGuidelines[editingItem.category][editingItem.index] = editingItem.text;
       }
       
@@ -164,7 +163,7 @@ const AdminSafetyGuidelines = () => {
       type: "item",
       category: category,
       index: index,
-      id: -1
+      id: ""
     });
   };
   
@@ -178,7 +177,7 @@ const AdminSafetyGuidelines = () => {
       type: "",
       category: "",
       index: -1,
-      id: -1
+      id: ""
     });
   };
   
@@ -189,7 +188,7 @@ const AdminSafetyGuidelines = () => {
   // Functions for emergency contact management
   const addEmergencyContact = () => {
     setEditingContact({ 
-      id: -1, 
+      id: Date.now().toString(), 
       title: "", 
       number: "" 
     });
@@ -197,16 +196,12 @@ const AdminSafetyGuidelines = () => {
   
   const saveEmergencyContact = () => {
     if (editingContact.title.trim() !== "" && editingContact.number.trim() !== "") {
-      if (editingContact.id === -1) {
-        // Add new contact with a unique ID
-        const newId = emergencyContacts.length > 0 
-          ? Math.max(...emergencyContacts.map(c => c.id)) + 1 
-          : 1;
-          
+      if (editingContact.id === "") {
+        // Add new contact
         setEmergencyContacts([
           ...emergencyContacts,
           { 
-            id: newId, 
+            id: Date.now().toString(),
             title: editingContact.title, 
             number: editingContact.number 
           }
@@ -221,8 +216,7 @@ const AdminSafetyGuidelines = () => {
           )
         );
       }
-      
-      setEditingContact({ id: -1, title: "", number: "" });
+      setEditingContact({ id: "", title: "", number: "" });
     }
   };
   
@@ -244,7 +238,7 @@ const AdminSafetyGuidelines = () => {
       type: "",
       category: "",
       index: -1,
-      id: -1
+      id: ""
     });
   };
   
@@ -255,16 +249,11 @@ const AdminSafetyGuidelines = () => {
       number: contact.number 
     });
   };
-  
-  // Save all changes (in a real app, this would send data to a server)
-  const saveAllChanges = () => {
-    alert("All changes saved successfully!");
-    // In a real app: call API to save data to server
-  };
-  
+
+  if (loading) return <div className="loading">Loading safety guidelines...</div>;
+
   return (
     <div className="main-container">
-      {/* Sidebar */}
       <div className="sidebar">
         <div className="nav-items">
           <button
@@ -309,7 +298,6 @@ const AdminSafetyGuidelines = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="main-content">
         <div className="header">
           <h1 className="title">SAFETY GUIDELINES MANAGEMENT</h1>
@@ -319,9 +307,7 @@ const AdminSafetyGuidelines = () => {
           </button>
         </div>
         
-        {/* Main content layout */}
         <div className="admin-safety-content">
-          {/* Categories management section */}
           <div className="chart-container categories-container">
             <div className="chart-header">
               <h2 className="chart-title">Safety Guidelines</h2>
@@ -405,7 +391,7 @@ const AdminSafetyGuidelines = () => {
                   
                   <div className="accordion-content">
                     <ul className="guideline-list">
-                      {guidelines[category].map((item, index) => (
+                      {guidelines[category]?.map((item, index) => (
                         <li key={index} className="guideline-item">
                           {editingItem.category === category && editingItem.index === index ? (
                             <div className="edit-item-form">
@@ -487,14 +473,16 @@ const AdminSafetyGuidelines = () => {
             </div>
           </div>
 
-          {/* Emergency Contacts section */}
           <div className="chart-container contacts-container">
             <div className="chart-header">
               <h2 className="chart-title">Emergency Contacts</h2>
-
+              <div className="info-message">
+                <p>Emergency contacts are hardcoded and only editable in the local state.</p>
+                <p>Changes to these contacts will not persist after page refresh or affect the user view.</p>
+              </div>
             </div>
             
-            {editingContact.id === -1 && (editingContact.title !== "" || editingContact.number !== "") && (
+            {editingContact.id !== "" && (
               <div className="edit-contact-form">
                 <div className="form-group">
                   <label htmlFor="contactTitle">Title</label>
@@ -524,7 +512,7 @@ const AdminSafetyGuidelines = () => {
                   </button>
                   <button 
                     className="admin-button cancel-button"
-                    onClick={() => setEditingContact({ id: -1, title: "", number: "" })}
+                    onClick={() => setEditingContact({ id: "", title: "", number: "" })}
                   >
                     <X size={16} /> Cancel
                   </button>
@@ -563,7 +551,7 @@ const AdminSafetyGuidelines = () => {
                         </button>
                         <button 
                           className="admin-button cancel-button"
-                          onClick={() => setEditingContact({ id: -1, title: "", number: "" })}
+                          onClick={() => setEditingContact({ id: "", title: "", number: "" })}
                         >
                           <X size={16} /> Cancel
                         </button>
@@ -596,10 +584,16 @@ const AdminSafetyGuidelines = () => {
                 </div>
               ))}
             </div>
+            
+            <button 
+              className="add-contact-button"
+              onClick={addEmergencyContact}
+            >
+              <Plus size={16} /> Add Contact
+            </button>
           </div>
         </div>
         
-        {/* Confirmation dialog */}
         {deleteConfirmation.show && (
           <div className="confirmation-dialog">
             <div className="dialog-content">
@@ -611,7 +605,7 @@ const AdminSafetyGuidelines = () => {
                   <div className="item-to-delete">
                     <strong>{deleteConfirmation.category}</strong>
                     <p className="item-count">
-                      {guidelines[deleteConfirmation.category].length} guidelines will be removed
+                      {guidelines[deleteConfirmation.category]?.length || 0} guidelines will be removed
                     </p>
                   </div>
                 </>
@@ -621,7 +615,7 @@ const AdminSafetyGuidelines = () => {
                 <>
                   <p>Are you sure you want to delete this guideline?</p>
                   <div className="item-to-delete">
-                    <strong>"{guidelines[deleteConfirmation.category][deleteConfirmation.index]}"</strong>
+                    <strong>"{guidelines[deleteConfirmation.category]?.[deleteConfirmation.index]}"</strong>
                     <p className="category-name">From: {deleteConfirmation.category}</p>
                   </div>
                 </>
@@ -655,7 +649,7 @@ const AdminSafetyGuidelines = () => {
                     type: "",
                     category: "",
                     index: -1,
-                    id: -1
+                    id: ""
                   })}
                 >
                   Cancel

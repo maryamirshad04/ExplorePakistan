@@ -1,16 +1,56 @@
-import React from 'react';
-import { ShoppingCart,BarChart, Shield, Home, Clock, Heart, Gift } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, BarChart, Shield, Home, Clock, Heart, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './safetyGuidelines.css';
+import axios from 'axios';
 
 const SafetyGuidelines = () => {
   const navigate = useNavigate();
   const currentPath = window.location.pathname.toLowerCase();
   const [cart, setCart] = React.useState([]);
+  
+  // Hardcoded emergency contacts
+  const emergencyContacts = [
+    { id: "1", title: "Police", number: "15" },
+    { id: "2", title: "Ambulance", number: "1122" },
+    { id: "3", title: "Tourism Police", number: "+92-310-5888888" },
+    { id: "4", title: "Fire Brigade", number: "16" },
+    { id: "5", title: "Tourist Helpline", number: "+92-51-9204444" }
+  ];
+  
+  const [guidelines, setGuidelines] = useState({
+    "General Safety": [],
+    "Health Precautions": [],
+    "Transportation Safety": [],
+    "Cultural Awareness": []
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSafetyData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/safety');
+        if (response.data) {
+          setGuidelines(response.data.guidelines || {
+            "General Safety": [],
+            "Health Precautions": [],
+            "Transportation Safety": [],
+            "Cultural Awareness": []
+          });
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching safety guidelines:', error);
+        setLoading(false);
+      }
+    };
+    fetchSafetyData();
+  }, []);
+
+  if (loading) return <div className="loading">Loading safety guidelines...</div>;
 
   return (
     <div className="main-container">
-      {/* Sidebar */}
       <div className="sidebar">
         <div className="nav-items">
           <button
@@ -69,7 +109,6 @@ const SafetyGuidelines = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="main-content">
         <div className="header">
           <h1 className="title">EXPLORE PAKISTAN</h1>
@@ -81,75 +120,31 @@ const SafetyGuidelines = () => {
           </div>
         </div>
         
-        {/* Safety Guidelines Content */}
         <div className="safety-guidelines">
           <h2 className="section-title">SAFETY GUIDELINES</h2>
           
           <div className="guidelines-container">
-            <div className="guideline-category">
-              <h3 className="guideline-heading">General Safety</h3>
-              <ul className="guideline-list">
-                <li>Always keep copies of important documents like passport and visa</li>
-                <li>Register with your embassy or consulate upon arrival</li>
-                <li>Stay updated with local news and travel advisories</li>
-                <li>Purchase comprehensive travel insurance before your trip</li>
-                <li>Share your itinerary with family or friends</li>
-              </ul>
-            </div>
-            
-            <div className="guideline-category">
-              <h3 className="guideline-heading">Health Precautions</h3>
-              <ul className="guideline-list">
-                <li>Carry a basic first aid kit with necessary medications</li>
-                <li>Drink only bottled or purified water</li>
-                <li>Be cautious with street food and uncooked items</li>
-                <li>Protect yourself from mosquitoes in rural areas</li>
-                <li>Know the location of the nearest hospital or medical facility</li>
-              </ul>
-            </div>
-            
-            <div className="guideline-category">
-              <h3 className="guideline-heading">Transportation Safety</h3>
-              <ul className="guideline-list">
-                <li>Use reputable transportation services</li>
-                <li>Avoid traveling alone at night in unfamiliar areas</li>
-                <li>Keep emergency contact numbers handy</li>
-                <li>Be extra cautious when crossing roads in busy cities</li>
-                 <li>Consider hiring local guides for remote locations </li>
-              </ul>
-            </div>
-            
-            <div className="guideline-category">
-              <h3 className="guideline-heading">Cultural Awareness</h3>
-              <ul className="guideline-list">
-                <li>Respect local customs and dress modestly, especially at religious sites</li>
-                <li>Ask permission before photographing people</li>
-                <li>Learn basic phrases in Urdu or local languages</li>
-                <li>Be mindful of local religious practices and holidays</li>
-                <li>Remove shoes when entering mosques and homes</li>
-              </ul>
-            </div>
+            {Object.entries(guidelines).map(([category, items]) => (
+              <div className="guideline-category" key={category}>
+                <h3 className="guideline-heading">{category}</h3>
+                <ul className="guideline-list">
+                  {items.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
           
           <div className="emergency-contacts">
             <h3 className="guideline-heading">Emergency Contacts</h3>
             <div className="contact-cards">
-              <div className="contact-card">
-                <h4>Police</h4>
-                <p className="contact-number">15</p>
-              </div>
-              <div className="contact-card">
-                <h4>Ambulance</h4>
-                <p className="contact-number">1122</p>
-              </div>
-              <div className="contact-card">
-                <h4>Tourist Police</h4>
-                <p className="contact-number">1422</p>
-              </div>
-              <div className="contact-card">
-                <h4>Highway Emergency</h4>
-                <p className="contact-number">130</p>
-              </div>
+              {emergencyContacts.map((contact) => (
+                <div className="contact-card" key={contact.id}>
+                  <h4>{contact.title}</h4>
+                  <p className="contact-number">{contact.number}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
