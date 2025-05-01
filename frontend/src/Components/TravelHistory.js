@@ -14,6 +14,7 @@ const TravelHistory = () => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [isBudgetSaved, setIsBudgetSaved] = useState(false);
   const [savedTravelPlans, setSavedTravelPlans] = useState([]);
+  const [destinations, setDestinations] = useState([]);
 
   // Corrected URL construction for API calls
   const baseUrl = "http://localhost:8080";
@@ -35,7 +36,7 @@ const TravelHistory = () => {
         const data = await response.json();
 
         if (data.length === 0) {
-          setError('No travel history found.');
+          setError('');
         } else {
           // Transform data into the correct format
           const formattedHistories = data.map((history) => ({
@@ -208,7 +209,28 @@ const TravelHistory = () => {
     setTimeout(() => setShowNotification(false), 3000);
   };
 
+  // Updated the center box to retrieve and display all destinations from the database
+  useEffect(() => {
+    const fetchAllDestinations = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/api/destinations`); // Replace with the correct API endpoint for fetching destinations
 
+        if (!response.ok) {
+          throw new Error('Failed to fetch destinations');
+        }
+
+        const data = await response.json();
+        setDestinations(data); // Update state with fetched destinations
+      } catch (err) {
+        console.error('Error fetching destinations:', err);
+        setError('Failed to load destinations.');
+      }
+    };
+
+    fetchAllDestinations();
+  }, []);
+
+  // Updated layout to display destination names in a grid and rearranged sections
   return (
     <div className="main-container">
       {/* Sidebar */}
@@ -282,77 +304,7 @@ const TravelHistory = () => {
                     </div>
         </div>
 
-        {/* Destinations Box */}
-        <div className="destinations-box">
-          <h2 className="section-title">Your Trip Budget Estimator Destinations</h2>
-          <div className="destinations-list">
-            {cart.length > 0 ? (
-              cart.map((item, index) => (
-                <div key={index} className="destination-item">
-                  <h3>{item.destination}</h3>
-                  <p>Duration: {item.duration} days</p>
-                  <p>Cost: {item.pricePerDay * item.duration} PKR</p>
-                </div>
-              ))
-            ) : (
-              <p>No destinations in your trip budget estimator.</p>
-            )}
-          </div>
-        </div>
-
-        {/* Travel History Section */}
-        {loading ? (
-          <div className="loading-message">Loading travel history...</div>
-        ) : error ? (
-          <div className="error-message">{error}</div>
-        ) : (
-          <div className="history-section">
-            <div className="history-box">
-              <h2 className="section-title">YOUR VISITED PLACES</h2>
-              <div className="history-items">
-                {travelHistories.map((trip) => (
-                  <div key={trip.id} className="history-card">
-                    <div className="card-details">
-                      <div className="trip-header">
-                        <h3 className="trip-city">{trip.city}</h3>
-                        <div className="trip-rating">
-                          {[...Array(trip.rating)].map((_, i) => (
-                            <Star key={i} className="star-icon filled" size={16} />
-                          ))}
-                          {[...Array(5 - trip.rating)].map((_, i) => (
-                            <Star key={i} className="star-icon" size={16} />
-                          ))}
-                        </div>
-                      </div>
-                      <div className="trip-info">
-                        <div className="info-item">
-                          <Calendar className="info-icon" size={16} />
-                          <span>{trip.date}</span>
-                        </div>
-                        <div className="info-item">
-                          <Clock className="info-icon" size={16} />
-                          <span>{trip.duration}</span>
-                        </div>
-                      </div>
-                      <div className="trip-highlights">
-                        <h4>Highlights:</h4>
-                        <div className="highlights-list">
-                          {trip.highlights.map((highlight, index) => (
-                            <div key={index} className="highlight-item">
-                              <MapPin className="highlight-icon" size={14} />
-                              <span>{highlight}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
+        {/* Saved Travel Plans Section */}
         <div className="history-section">
           <div className="history-box">
             <h2 className="section-title">YOUR SAVED TRAVEL PLANS</h2>
@@ -369,6 +321,19 @@ const TravelHistory = () => {
             </div>
           </div>
         </div>
+
+        {/* Destinations Grid */}
+        <div className="destinations-grid">
+          {destinations.length > 0 ? (
+            destinations.map((destination, index) => (
+              <div key={index} className="destination-box">
+                <h3>{destination.name}</h3>
+              </div>
+            ))
+          ) : null}
+        </div>
+
+        {/* Removed the 'Your Travel History' box */}
       </div>
     </div>
   );

@@ -415,3 +415,27 @@
   overflow-y: auto; /* Enable scrolling for the main content */
   padding: 1rem; /* Add padding for better spacing */
 }
+
+/* Added styles for destination boxes in a grid */
+.destinations-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 boxes per row */
+  gap: 20px; /* Space between boxes */
+  margin: 20px 0; /* Spacing around the grid */
+}
+
+/* Updated styles for destination boxes to match the green behind "YOUR SAVED TRAVEL PLANS" */
+.destination-box {
+  background-color: #dcfce7; /* Match the green behind "YOUR SAVED TRAVEL PLANS" */
+  color: #065f46; /* Dark green text */
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.destination-box h3 {
+  margin: 0;
+}
