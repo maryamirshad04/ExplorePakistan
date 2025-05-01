@@ -1,8 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.User;
+import com.example.demo.service.AuthService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.FirebaseToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,95 +18,150 @@ import java.util.Map;
 @RequestMapping("/auth")
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserAuthController {
+    private static final Logger logger = LoggerFactory.getLogger(UserAuthController.class);
 
-    // 🔹 User Sign-Up (Register)
-    @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody Map<String, String> user) {
+    @Autowired
+    private AuthService authService;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> payload, @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        String email = payload.get("email");
+        logger.info("Login attempt for email: {}", email);
+        
         try {
-            // Validate input
-            if (user.get("email") == null || user.get("password") == null || user.get("name") == null || user.get("age") == null ||
-                    user.get("email").isEmpty() || user.get("password").isEmpty() || user.get("name").isEmpty() || user.get("age").isEmpty()) {
-                return ResponseEntity.badRequest().body("Error: Fields cannot be empty (email, password, name, age)");
+            // Check if Authorization header exists
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                logger.error("Missing or invalid authorization header for login attempt");
+                return ResponseEntity.status(401).body(Map.of(
+                    "status", "error",
+                    "message", "Missing or invalid authorization token"
+                ));
             }
-
-            if (user.get("password").length() < 6) {
-                return ResponseEntity.badRequest().body("Error: Password must be at least 6 characters long");
-            }
-
-            int age;
+            
+            // Extract and verify the token
+            String idToken = authHeader.substring(7);
+            logger.debug("Verifying Firebase token");
+            
+            FirebaseToken decodedToken;
             try {
-                age = Integer.parseInt(user.get("age"));
-                if (age <= 15 && age > 80) {
-                    return ResponseEntity.badRequest().body("Error: Age must be a positive number");
-                }
-            } catch (NumberFormatException e) {
-                return ResponseEntity.badRequest().body("Error: Age must be a valid number");
+                decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            } catch (FirebaseAuthException e) {
+                logger.error("Firebase token verification failed: {}", e.getMessage());
+                return ResponseEntity.status(401).body(Map.of(
+                    "status", "error",
+                    "message", "Invalid Firebase token: " + e.getMessage()
+                ));
             }
-
-            // Create user in Firebase Auth
-            UserRecord.CreateRequest request = new UserRecord.CreateRequest()
-                    .setEmail(user.get("email"))
-                    .setPassword(user.get("password"))
-                    .setDisplayName(user.get("name"));
-
-            UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
-
-            // Prepare response
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "User created successfully");
-            response.put("uid", userRecord.getUid());
-            response.put("email", userRecord.getEmail());
-            response.put("name", userRecord.getDisplayName());
-            response.put("age", String.valueOf(age));
-
-            // Here, you would typically store the age in your database along with the user details.
-            // For example:
-            // userRepository.save(new User(userRecord.getUid(), user.get("name"), user.get("email"), age));
-
+            
+            String uid = decodedToken.getUid();
+            logger.info("Token verified for UID: {}", uid);
+            
+            // Verify that the token belongs to the user trying to log in
+            if (!email.equals(decodedToken.getEmail())) {
+                logger.warn("Token email mismatch. Token: {}, Request: {}", decodedToken.getEmail(), email);
+                return ResponseEntity.status(403).body(Map.of(
+                    "status", "error",
+                    "message", "Token does not match provided email"
+                ));
+            }
+            
+            logger.info("Fetching user data from service for email: {}", email);
+            User user = authService.login(email);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("user", user);
+            response.put("message", "Login successful");
+            
+            logger.info("Login successful for user: {}", user.getUid());
             return ResponseEntity.ok(response);
-
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            logger.error("Login error for email {}: {}", email, e.getMessage(), e);
+            Map<String, String> error = new HashMap<>();
+            error.put("status", "error");
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(401).body(error);
         }
     }
 
-    // 🔹 User Sign-In (Login)
-    @PostMapping("/login")
-    public ResponseEntity<?> signIn(@RequestBody Map<String, String> credentials) {
+    // Options mapping to handle preflight requests
+    @RequestMapping(value = "/login", method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handleOptions() {
+        logger.info("Received OPTIONS request for /auth/login");
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody User user) {
+        logger.info("Signup attempt for email: {}", user.getEmail());
         try {
-            String email = credentials.get("email");
-            String password = credentials.get("password");
-
-            if (email == null || password == null || email.isEmpty() || password.isEmpty()) {
-                return ResponseEntity.badRequest().body("Error: Fields cannot be empty (email, password)");
-            }
-
-            // Firebase Admin SDK doesn't verify passwords, so this needs to be handled on the client-side.
-            // Here, we will simply check if the user exists using their email.
-            UserRecord userRecord = FirebaseAuth.getInstance().getUserByEmail(email);
+            User createdUser = authService.signUp(user);
             
-            if (userRecord != null) {
-                // Simulate successful login (you would typically validate the password via Firebase Client SDK on the frontend)
-                Map<String, String> response = new HashMap<>();
-                response.put("message", "Login successful");
-                response.put("uid", userRecord.getUid());
-                response.put("email", userRecord.getEmail());
-                response.put("name", userRecord.getDisplayName());
-
-                // Retrieve age from your database if stored
-                // For example:
-                // int age = userRepository.findByUid(userRecord.getUid()).getAge();
-                // response.put("age", String.valueOf(age));
-
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(404).body("Error: User not found");
-            }
-
-        } catch (FirebaseAuthException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("user", createdUser);
+            response.put("message", "Signup successful");
+            
+            logger.info("Signup successful for user: {}", createdUser.getUid());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Signup error: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(createErrorResponse(e));
         }
+    }
+
+    @GetMapping("/user/{uid}")
+    public ResponseEntity<?> getUser(@PathVariable String uid, @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        logger.info("Get user data request for UID: {}", uid);
+        try {
+            // Verify the token
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                logger.error("Missing or invalid authorization header for user data request");
+                return ResponseEntity.status(401).body(Map.of(
+                    "status", "error",
+                    "message", "Missing or invalid authorization token"
+                ));
+            }
+            
+            String idToken = authHeader.substring(7);
+            FirebaseToken decodedToken;
+            try {
+                decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            } catch (FirebaseAuthException e) {
+                logger.error("Firebase token verification failed: {}", e.getMessage());
+                return ResponseEntity.status(401).body(Map.of(
+                    "status", "error",
+                    "message", "Invalid Firebase token: " + e.getMessage()
+                ));
+            }
+            
+            // Only allow users to access their own data or if they are admin
+            String tokenUid = decodedToken.getUid();
+            if (!tokenUid.equals(uid) && !isAdmin(decodedToken.getEmail())) {
+                logger.warn("Unauthorized access attempt. Token UID: {}, Requested UID: {}", tokenUid, uid);
+                return ResponseEntity.status(403).body(Map.of(
+                    "status", "error",
+                    "message", "Unauthorized access to user data"
+                ));
+            }
+            
+            User user = authService.getUserData(uid);
+            logger.info("User data retrieved successfully for UID: {}", uid);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            logger.error("Error retrieving user data: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(createErrorResponse(e));
+        }
+    }
+
+    private boolean isAdmin(String email) {
+        return email != null && email.toLowerCase().equals("admin@gmail.com");
+    }
+
+    private Map<String, String> createErrorResponse(Exception e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("status", "error");
+        error.put("message", e.getMessage());
+        return error;
     }
 }

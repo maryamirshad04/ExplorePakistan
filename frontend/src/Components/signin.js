@@ -6,43 +6,47 @@ import { Link, useNavigate } from "react-router-dom";
 const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Define basic styles or remove completely if you want to use CSS files instead
-  // Replace API_BASE_URL with your actual server URL
-  const API_BASE_URL = "http://localhost:8080"; // Change this to your API endpoint
+  const API_BASE_URL = "http://localhost:8080";
 
-  // Modified login handler to route based on email address
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+    
     try {
       // Authenticate with Firebase
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const token = await user.getIdToken();
 
+      console.log("Firebase Auth successful, fetching user data...");
+      
       // Send token to your backend server
-      // Change the endpoint URL to match your server configuration
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          email, 
-          password
-        })
+        body: JSON.stringify({ email }),
       });
 
       if (!response.ok) {
-        throw new Error("Invalid login attempt");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed on server");
       }
 
-      // Check if the email is admin@gmail.com and redirect accordingly
+      const userData = await response.json();
+      console.log("Login successful:", userData);
+      
+      // Store user info in localStorage or sessionStorage if needed
+      localStorage.setItem("user", JSON.stringify(userData.user));
+      
+      // Redirect based on email/role
       if (email.toLowerCase() === "admin@gmail.com") {
         console.log("Admin login successful, navigating to Admin Dashboard...");
         navigate("/adminDashBoard");
@@ -51,8 +55,10 @@ const LogIn = () => {
         navigate("/dashboard");
       }
     } catch (error) {
-      console.error("Error logging in:", error);
-      alert("Login failed. Please check your credentials.");
+      console.error("Error logging in:", error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,14 +67,12 @@ const LogIn = () => {
       backgroundImage: "url(background.jpg)",
       backgroundPosition: "center",
       backgroundSize: "cover",
-      backgroundClip: "content-box",
       display: "flex",
       alignItems: "center",
       justifyContent: "flex-end",
       height: "100vh",
       width: "100%",
     },
-
     parent_div: {
       backgroundColor: "rgba(193, 193, 193, 0.5)",
       WebkitBackdropFilter: "blur(5px)",
@@ -79,26 +83,22 @@ const LogIn = () => {
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      boxShadow:
-        "1px 1px 2px rgba(255, 255, 255, 0.3) ,-1px -1px 2px rgba(255, 255, 255, 0.3)",
+      boxShadow: "1px 1px 2px rgba(255, 255, 255, 0.3) ,-1px -1px 2px rgba(255, 255, 255, 0.3)",
       color: "white",
       borderRadius: "20px",
     },
-
     title: {
       fontSize: "30px",
-      color: "darkgreen"
+      color: "darkgreen",
     },
-
     form_div: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
       gap: "10px",
       width: "100%",
-      color: "black"
+      color: "black",
     },
-
     input_area: {
       borderRadius: "10px",
       padding: "15px 10px",
@@ -106,7 +106,6 @@ const LogIn = () => {
       border: "none",
       backgroundColor: "rgb(226, 226, 226)",
     },
-
     button: {
       width: "69%",
       borderRadius: "10px",
@@ -115,7 +114,15 @@ const LogIn = () => {
       border: "none",
       backgroundColor: "darkgreen",
       color: "white",
+      cursor: loading ? "not-allowed" : "pointer",
+      opacity: loading ? 0.7 : 1,
     },
+    errorText: {
+      color: "red",
+      marginTop: "10px",
+      textAlign: "center",
+      maxWidth: "80%",
+    }
   };
 
   return (
@@ -130,6 +137,8 @@ const LogIn = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             style={style.input_area}
+            disabled={loading}
+            required
           />
           <label style={{ width: "67%" }}>Password</label>
           <input
@@ -138,14 +147,16 @@ const LogIn = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={style.input_area}
+            disabled={loading}
+            required
           />
-          <button type="submit" style={style.button}>
-            Login
+          <button type="submit" style={style.button} disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
+          {error && <p style={style.errorText}>{error}</p>}
         </form>
-        <h2 style={{ marginBottom: "0px", color: "black" }}></h2>
         <p style={{ marginBottom: "2rem", color: "black" }}>
-          dont have an account?<Link to={"/signUp"}>   SignUp</Link>
+          Don't have an account? <Link to={"/signUp"}>Sign Up</Link>
         </p>
       </div>
     </div>

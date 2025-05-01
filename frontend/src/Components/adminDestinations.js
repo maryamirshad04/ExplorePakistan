@@ -1,90 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import './adminDestinations.css';
-import { Home, Users,Shield, Map, Gift, Search, Plus, Trash2, X, Check, Tag } from 'lucide-react';
+import { Home, Shield,Users, Map, Gift, Search, Plus, Trash2, X, Check, Tag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+const API_BASE_URL = 'http://localhost:8080/api/destinations';
 
 const AdminDestinations = () => {
   const navigate = useNavigate();
   const currentPath = window.location.pathname.toLowerCase();
 
-  // Sample destinations data - using the same structure from destinations.js
-  const [destinations, setDestinations] = useState([
-    {
-      id: 1,
-      name: "Lahore",
-      description: "Cultural hub with rich history and amazing food",
-      image: "/api/placeholder/400/320",
-      rating: 4.7,
-      pricePerDay: 120,
-      activities: ["City Tour", "Food Street Experience", "Lahore Fort Visit", "Shopping in Anarkali"],
-      region: "Punjab",
-      tags: ["historical", "city", "cultural"]
-    },
-    {
-      id: 2,
-      name: "Hunza Valley",
-      description: "Breathtaking mountain landscapes and serene environment",
-      image: "/api/placeholder/400/320",
-      rating: 4.9,
-      pricePerDay: 150,
-      activities: ["Hiking", "Boat Ride at Attabad Lake", "Baltit Fort Visit", "Local Cuisine Experience"],
-      region: "Gilgit-Baltistan",
-      tags: ["mountains", "nature", "adventure"]
-    },
-    {
-      id: 3,
-      name: "Swat Valley",
-      description: "The Switzerland of Pakistan with lush green meadows",
-      image: "/api/placeholder/400/320",
-      rating: 4.8,
-      pricePerDay: 135,
-      activities: ["Kalam Visit", "Mahodand Lake Trek", "White Water Rafting", "Local Cuisine"],
-      region: "Khyber Pakhtunkhwa",
-      tags: ["mountains", "nature", "adventure"]
-    },
-    {
-      id: 4,
-      name: "Karachi",
-      description: "Bustling metropolis with beautiful beaches and seafood",
-      image: "/api/placeholder/400/320",
-      rating: 4.5,
-      pricePerDay: 145,
-      activities: ["Clifton Beach Visit", "Port Grand", "National Museum", "Boat Trip"],
-      region: "Sindh",
-      tags: ["city", "beach", "metropolitan"]
-    },
-    {
-      id: 5,
-      name: "Islamabad",
-      description: "Green and peaceful capital city with modern infrastructure",
-      image: "/api/placeholder/400/320",
-      rating: 4.6,
-      pricePerDay: 130,
-      activities: ["Faisal Mosque", "Margalla Hills Trek", "Daman-e-Koh", "Pakistan Monument"],
-      region: "Federal Territory",
-      tags: ["city", "modern", "peaceful"]
-    },
-    {
-      id: 6,
-      name: "Murree",
-      description: "Popular hill station with pine forests and cool climate",
-      image: "/api/placeholder/400/320",
-      rating: 4.4,
-      pricePerDay: 110,
-      activities: ["Mall Road", "Chair Lift", "Pindi Point", "Kashmir Point"],
-      region: "Punjab",
-      tags: ["mountains", "hill station", "family"]
-    }
-  ]);
-
-  // Search state
+  const [destinations, setDestinations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredDestinations, setFilteredDestinations] = useState(destinations);
-
-  // Modal state for adding new destination
+  const [filteredDestinations, setFilteredDestinations] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newDestination, setNewDestination] = useState({
-    id: null,
     name: "",
     description: "",
     image: "/api/placeholder/400/320",
@@ -94,13 +25,29 @@ const AdminDestinations = () => {
     region: "",
     tags: []
   });
-
-  // Activity and tag input states
   const [activityInput, setActivityInput] = useState("");
   const [tagInput, setTagInput] = useState("");
-
-  // Notification state
   const [notification, setNotification] = useState({ show: false, message: "", type: "" });
+
+  // Fetch destinations
+  const fetchDestinations = async () => {
+    try {
+      const response = await fetch(API_BASE_URL);
+      if (!response.ok) throw new Error('Failed to fetch destinations');
+      const data = await response.json();
+      setDestinations(data);
+      setFilteredDestinations(data);
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+      showNotification("Failed to load destinations", "error");
+    }
+  };
+
+  useEffect(() => {
+    fetchDestinations();
+  }, []);
 
   // Handle search
   useEffect(() => {
@@ -116,7 +63,7 @@ const AdminDestinations = () => {
     }
   }, [searchQuery, destinations]);
 
-  // Handle form input changes
+  // Handle form changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewDestination({
@@ -125,7 +72,6 @@ const AdminDestinations = () => {
     });
   };
 
-  // Add activity to new destination
   const addActivity = () => {
     if (activityInput.trim() !== "") {
       setNewDestination({
@@ -136,7 +82,6 @@ const AdminDestinations = () => {
     }
   };
 
-  // Remove activity from new destination
   const removeActivity = (index) => {
     const updatedActivities = [...newDestination.activities];
     updatedActivities.splice(index, 1);
@@ -146,7 +91,6 @@ const AdminDestinations = () => {
     });
   };
 
-  // Add tag to new destination
   const addTag = () => {
     if (tagInput.trim() !== "" && !newDestination.tags.includes(tagInput.trim())) {
       setNewDestination({
@@ -157,7 +101,6 @@ const AdminDestinations = () => {
     }
   };
 
-  // Remove tag from new destination
   const removeTag = (index) => {
     const updatedTags = [...newDestination.tags];
     updatedTags.splice(index, 1);
@@ -167,114 +110,113 @@ const AdminDestinations = () => {
     });
   };
 
-  // Handle add destination form submission
-  const handleAddDestination = (e) => {
+  // Add destination
+  const handleAddDestination = async (e) => {
     e.preventDefault();
     
-    // Simple validation
-    if (!newDestination.name || !newDestination.description || !newDestination.region) {
-      showNotification("Please fill in all required fields", "error");
+    // Basic validation
+    if (!newDestination.name || !newDestination.region) {
+      showNotification("Name and Region are required", "error");
       return;
     }
-    
-    if (newDestination.activities.length === 0) {
-      showNotification("Please add at least one activity", "error");
-      return;
+
+    try {
+      const response = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...newDestination,
+          pricePerDay: parseFloat(newDestination.pricePerDay),
+          rating: parseFloat(newDestination.rating)
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Failed to add destination');
+      }
+
+      const savedDestination = await response.json();
+      setDestinations(prev => [...prev, savedDestination]);
+      setShowModal(false);
+      showNotification("Destination added successfully!", "success");
+      
+      // Reset form
+      setNewDestination({
+        name: "",
+        description: "",
+        image: "/api/placeholder/400/320",
+        rating: 4.0,
+        pricePerDay: 100,
+        activities: [],
+        region: "",
+        tags: []
+      });
+
+    } catch (error) {
+      console.error("Error:", error);
+      showNotification(error.message, "error");
     }
-    
-    if (newDestination.tags.length === 0) {
-      showNotification("Please add at least one tag", "error");
-      return;
-    }
-    
-    // Add new destination with unique ID
-    const maxId = Math.max(...destinations.map(dest => dest.id), 0);
-    const destinationToAdd = {
-      ...newDestination,
-      id: maxId + 1
-    };
-    
-    setDestinations([...destinations, destinationToAdd]);
-    setShowModal(false);
-    showNotification(`${destinationToAdd.name} has been added successfully`, "success");
-    
-    // Reset form
-    setNewDestination({
-      id: null,
-      name: "",
-      description: "",
-      image: "/api/placeholder/400/320",
-      rating: 4.0,
-      pricePerDay: 100,
-      activities: [],
-      region: "",
-      tags: []
-    });
   };
 
-  // Handle delete destination
-  const handleDeleteDestination = (id, name) => {
+  // Delete destination
+  const handleDeleteDestination = async (id, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-      const updatedDestinations = destinations.filter(dest => dest.id !== id);
-      setDestinations(updatedDestinations);
-      showNotification(`${name} has been deleted successfully`, "success");
+      try {
+        const response = await fetch(`${API_BASE_URL}/${id}`, {
+          method: 'DELETE',
+        });
+        
+        if (!response.ok) throw new Error('Failed to delete destination');
+        
+        const updatedDestinations = destinations.filter(dest => dest.id !== id);
+        setDestinations(updatedDestinations);
+        showNotification(`${name} deleted successfully`, "success");
+      } catch (error) {
+        showNotification(`Error: ${error.message}`, "error");
+      }
     }
   };
 
-  // Show notification
   const showNotification = (message, type) => {
     setNotification({ show: true, message, type });
-    setTimeout(() => {
-      setNotification({ show: false, message: "", type: "" });
-    }, 3000);
+    setTimeout(() => setNotification({ show: false, message: "", type: "" }), 3000);
   };
 
-  // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR' }).format(amount);
   };
 
-  // Get unique regions for dropdown
   const regions = [...new Set(destinations.map(dest => dest.region))];
+
+  if (isLoading) return <div className="main-container">Loading destinations...</div>;
+  if (error) return <div className="main-container">Error: {error}</div>;
 
   return (
     <div className="main-container">
       {/* Sidebar */}
       <div className="sidebar">
         <div className="nav-items">
-          <button
-            className={`sidebar-button ${currentPath === '/adminDashBoard' ? 'active' : ''}`}
-            onClick={() => navigate('/adminDashBoard')}
-          >
+          <button className={`sidebar-button ${currentPath === '/adminDashBoard' ? 'active' : ''}`} onClick={() => navigate('/adminDashBoard')}>
             <Home className="icon" />
             <span className="label">Dashboard</span>
           </button>
-
-          <button
-            className={`sidebar-button ${currentPath === '/adminUsers' ? 'active' : ''}`}
-            onClick={() => navigate('/adminUsers')}
-          >
+          <button className={`sidebar-button ${currentPath === '/adminUsers' ? 'active' : ''}`} onClick={() => navigate('/adminUsers')}>
             <Users className="icon" />
             <span className="label">Users</span>
           </button>
-
-          <button
-            className={`sidebar-button ${currentPath === '/adminDestinations' ? 'active' : ''}`}
-            onClick={() => navigate('/adminDestinations')}
-          >
+          <button className={`sidebar-button ${currentPath === '/adminDestinations' ? 'active' : ''}`} onClick={() => navigate('/adminDestinations')}>
             <Map className="icon" />
             <span className="label">Destinations</span>
           </button>
-
-          <button
-            className={`sidebar-button ${currentPath === '/adminSouvenirs' ? 'active' : ''}`}
-            onClick={() => navigate('/adminSouvenirs')}
-          >
+          <button className={`sidebar-button ${currentPath === '/adminSouvenirs' ? 'active' : ''}`} onClick={() => navigate('/adminSouvenirs')}>
             <Gift className="icon" />
             <span className="label">Souvenirs</span>
           </button>
           <button
-              className={`sidebar-button ${currentPath === '/adminSafetyGuidelines' ? 'active' : ''}`}
+              className={`sidebar-button ${currentPath.includes('adminsafety') ? 'active' : ''}`}
               onClick={() => navigate('/adminSafetyGuidelines')}
             >
               <Shield className="icon" />
@@ -292,7 +234,7 @@ const AdminDestinations = () => {
         {/* Action Bar */}
         <div className="action-bar">
           <div className="search-container">
-           
+            <Search className="search-icon" />
             <input 
               type="text" 
               placeholder="Search destinations..." 

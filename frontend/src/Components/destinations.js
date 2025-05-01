@@ -1,83 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './destinations.css';
 // Explicitly import all icons to avoid any issues
-import { ShoppingCart,BarChart,Shield, Home, Clock, Heart, Gift, Search, MapPin, Star, Plus, ShoppingBag } from 'lucide-react';
+import { ShoppingCart, BarChart, Shield, Home, Clock, Heart, Gift, Search, MapPin, Star, Plus, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+const API_BASE_URL = 'http://localhost:8080/api/destinations';
 
 const Destinations = () => {
   const navigate = useNavigate();
   const currentPath = window.location.pathname.toLowerCase();
 
-  // Sample destinations data
-  const [destinations, setDestinations] = useState([
-    {
-      id: 1,
-      name: "Lahore",
-      description: "Cultural hub with rich history and amazing food",
-      image: "/api/placeholder/400/320",
-      rating: 4.7,
-      pricePerDay: 120,
-      activities: ["City Tour", "Food Street Experience", "Lahore Fort Visit", "Shopping in Anarkali"],
-      region: "Punjab",
-      tags: ["historical", "city", "cultural"]
-    },
-    {
-      id: 2,
-      name: "Hunza Valley",
-      description: "Breathtaking mountain landscapes and serene environment",
-      image: "/api/placeholder/400/320",
-      rating: 4.9,
-      pricePerDay: 150,
-      activities: ["Hiking", "Boat Ride at Attabad Lake", "Baltit Fort Visit", "Local Cuisine Experience"],
-      region: "Gilgit-Baltistan",
-      tags: ["mountains", "nature", "adventure"]
-    },
-    {
-      id: 3,
-      name: "Swat Valley",
-      description: "The Switzerland of Pakistan with lush green meadows",
-      image: "/api/placeholder/400/320",
-      rating: 4.8,
-      pricePerDay: 135,
-      activities: ["Kalam Visit", "Mahodand Lake Trek", "White Water Rafting", "Local Cuisine"],
-      region: "Khyber Pakhtunkhwa",
-      tags: ["mountains", "nature", "adventure"]
-    },
-    {
-      id: 4,
-      name: "Karachi",
-      description: "Bustling metropolis with beautiful beaches and seafood",
-      image: "/api/placeholder/400/320",
-      rating: 4.5,
-      pricePerDay: 145,
-      activities: ["Clifton Beach Visit", "Port Grand", "National Museum", "Boat Trip"],
-      region: "Sindh",
-      tags: ["city", "beach", "metropolitan"]
-    },
-    {
-      id: 5,
-      name: "Islamabad",
-      description: "Green and peaceful capital city with modern infrastructure",
-      image: "/api/placeholder/400/320",
-      rating: 4.6,
-      pricePerDay: 130,
-      activities: ["Faisal Mosque", "Margalla Hills Trek", "Daman-e-Koh", "Pakistan Monument"],
-      region: "Federal Territory",
-      tags: ["city", "modern", "peaceful"]
-    },
-    {
-      id: 6,
-      name: "Murree",
-      description: "Popular hill station with pine forests and cool climate",
-      image: "/api/placeholder/400/320",
-      rating: 4.4,
-      pricePerDay: 110,
-      activities: ["Mall Road", "Chair Lift", "Pindi Point", "Kashmir Point"],
-      region: "Punjab",
-      tags: ["mountains", "hill station", "family"]
-    }
-  ]);
-
+  const [destinations, setDestinations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   // Cart state
   const [cart, setCart] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
@@ -85,20 +21,117 @@ const Destinations = () => {
 
   // Search and filter state
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredDestinations, setFilteredDestinations] = useState(destinations);
+  const [filteredDestinations, setFilteredDestinations] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState("All");
   const [selectedTag, setSelectedTag] = useState("All");
+
+  // Fetch destinations from API
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        const response = await fetch(API_BASE_URL);
+        if (!response.ok) throw new Error('Failed to fetch destinations');
+        const data = await response.json();
+        setDestinations(data);
+        setFilteredDestinations(data);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setIsLoading(false);
+        // Fallback to sample data if API fails
+        const sampleData = [
+          {
+            id: 1,
+            name: "Lahore",
+            description: "Cultural hub with rich history and amazing food",
+            image: "/api/placeholder/400/320",
+            rating: 4.7,
+            pricePerDay: 120,
+            activities: ["City Tour", "Food Street Experience", "Lahore Fort Visit", "Shopping in Anarkali"],
+            region: "Punjab",
+            tags: ["historical", "city", "cultural"]
+          },
+          {
+            id: 2,
+            name: "Hunza Valley",
+            description: "Breathtaking mountain landscapes and serene environment",
+            image: "/api/placeholder/400/320",
+            rating: 4.9,
+            pricePerDay: 150,
+            activities: ["Hiking", "Boat Ride at Attabad Lake", "Baltit Fort Visit", "Local Cuisine Experience"],
+            region: "Gilgit-Baltistan",
+            tags: ["mountains", "nature", "adventure"]
+          },
+          {
+            id: 3,
+            name: "Swat Valley",
+            description: "The Switzerland of Pakistan with lush green meadows",
+            image: "/api/placeholder/400/320",
+            rating: 4.8,
+            pricePerDay: 135,
+            activities: ["Kalam Visit", "Mahodand Lake Trek", "White Water Rafting", "Local Cuisine"],
+            region: "Khyber Pakhtunkhwa",
+            tags: ["mountains", "nature", "adventure"]
+          },
+          {
+            id: 4,
+            name: "Karachi",
+            description: "Bustling metropolis with beautiful beaches and seafood",
+            image: "/api/placeholder/400/320",
+            rating: 4.5,
+            pricePerDay: 145,
+            activities: ["Clifton Beach Visit", "Port Grand", "National Museum", "Boat Trip"],
+            region: "Sindh",
+            tags: ["city", "beach", "metropolitan"]
+          },
+          {
+            id: 5,
+            name: "Islamabad",
+            description: "Green and peaceful capital city with modern infrastructure",
+            image: "/api/placeholder/400/320",
+            rating: 4.6,
+            pricePerDay: 130,
+            activities: ["Faisal Mosque", "Margalla Hills Trek", "Daman-e-Koh", "Pakistan Monument"],
+            region: "Federal Territory",
+            tags: ["city", "modern", "peaceful"]
+          },
+          {
+            id: 6,
+            name: "Murree",
+            description: "Popular hill station with pine forests and cool climate",
+            image: "/api/placeholder/400/320",
+            rating: 4.4,
+            pricePerDay: 110,
+            activities: ["Mall Road", "Chair Lift", "Pindi Point", "Kashmir Point"],
+            region: "Punjab",
+            tags: ["mountains", "hill station", "family"]
+          }
+        ];
+        setDestinations(sampleData);
+        setFilteredDestinations(sampleData);
+        setIsLoading(false);
+        console.warn("Using sample data due to API error:", err.message);
+      }
+    };
+
+    fetchDestinations();
+
+    // Load cart from localStorage
+    const savedCart = localStorage.getItem('travelCart');
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (error) {
+        console.error("Failed to parse cart data:", error);
+        localStorage.removeItem('travelCart');
+      }
+    }
+  }, []);
 
   // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PKR' }).format(amount);
   };
-
-  // Get unique regions for filter
-  const regions = ["All", ...new Set(destinations.map(dest => dest.region))];
-  
-  // Get unique tags for filter
-  const tags = ["All", ...new Set(destinations.flatMap(dest => dest.tags))];
 
   // Handle search and filters
   useEffect(() => {
@@ -135,25 +168,14 @@ const Destinations = () => {
     }
     
     setShowNotification(true);
-    
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
+    setTimeout(() => setShowNotification(false), 3000);
   };
 
-  // Load cart from localStorage on component mount
-  useEffect(() => {
-    const savedCart = localStorage.getItem('travelCart');
-    if (savedCart) {
-      try {
-        const parsedCart = JSON.parse(savedCart);
-        setCart(parsedCart);
-      } catch (error) {
-        console.error("Failed to parse cart data:", error);
-        localStorage.removeItem('travelCart');
-      }
-    }
-  }, []);
+  // Get unique regions and tags for filters
+  const regions = ["All", ...new Set(destinations.map(dest => dest.region))];
+  const tags = ["All", ...new Set(destinations.flatMap(dest => dest.tags))];
+
+  if (isLoading) return <div className="main-container">Loading destinations...</div>;
 
   return (
     <div className="main-container">
@@ -202,6 +224,7 @@ const Destinations = () => {
             <Gift className="icon" />
             <span className="label">Souvenirs</span>
           </button>
+          
           <button
             className={`sidebar-button ${currentPath === '/reports' ? 'active' : ''}`}
             onClick={() => navigate('/reports')}
@@ -209,13 +232,14 @@ const Destinations = () => {
             <BarChart className="icon" />
             <span className="label">Reports</span>
           </button>
+          
           <button
-              className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}
-              onClick={() => navigate('/safety-guidelines')}
-            >
-              <Shield className="icon" />
-              <span className="label">Safety</span>
-            </button>
+            className={`sidebar-button ${currentPath === '/safety-guidelines' ? 'active' : ''}`}
+            onClick={() => navigate('/safety-guidelines')}
+          >
+            <Shield className="icon" />
+            <span className="label">Safety</span>
+          </button>
         </div>
       </div>
 
@@ -235,7 +259,7 @@ const Destinations = () => {
           {/* Search and Filter Bar */}
           <div className="search-filter-container">
             <div className="search-bar">
-            
+              <Search className="search-icon" />
               <input 
                 type="text" 
                 placeholder="Search destinations, activities..." 
@@ -275,6 +299,14 @@ const Destinations = () => {
               </div>
             </div>
           </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="error-message">
+              <p>Error fetching destinations: {error}</p>
+              <p>Showing sample data instead.</p>
+            </div>
+          )}
 
           {/* Notification */}
           {showNotification && (
@@ -318,8 +350,8 @@ const Destinations = () => {
                     <p className="card-description">{destination.description}</p>
                     
                     <div className="card-tags">
-                      {destination.tags.map(tag => (
-                        <span key={tag} className="tag">{tag}</span>
+                      {destination.tags.map((tag, index) => (
+                        <span key={index} className="tag">{tag}</span>
                       ))}
                     </div>
                     
@@ -340,13 +372,13 @@ const Destinations = () => {
                         <span className="price-period">/ day</span>
                       </div>
                       
-                          <button 
-                                             className="add-to-cart-button"
-                                             onClick={() => addToCart(destination)}
-                                           >
-                                             <Plus className="add-icon" />
-                                             <span>Add to Cart</span>
-                                           </button>
+                      <button 
+                        className="add-to-cart-button"
+                        onClick={() => addToCart(destination)}
+                      >
+                        <Plus className="add-icon" />
+                        <span>Add to Budget</span>
+                      </button>
                     </div>
                   </div>
                 </div>
