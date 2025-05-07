@@ -177,7 +177,7 @@ const AdminUsers = () => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Name</th>
+                  <th></th>
                   <th>Email</th>
                   <th>Status</th>
                   <th>Join Date</th>
