@@ -43,16 +43,16 @@
 
 ## 📌 About the Project
 
-ExplorePakistan was created with the aim of simplifying and enriching travel to one of South Asia’s most diverse and breathtaking destinations. Tourists often face challenges in finding tailored information — this platform addresses those gaps by offering a centralized travel assistant with:
+ExplorePakistan was created with the aim of simplifying and enriching travel to one of South Asia’s most diverse and breathtaking destinations. Tourists often face challenges in finding tailored information, this platform addresses those gaps by offering a centralized travel assistant with:
 
 - Personalization based on age demographics  
-- Region- and activity-specific recommendations  
+- Region and activity-specific recommendations  
 - Cultural sensitivity through educational guidelines  
 - Seasonal trends to optimize trip timing  
 
 For administrators, the system offers full content control and user moderation tools to maintain a trustworthy and engaging experience for all users.
 
-Whether you're looking to hike the mountains of Gilgit, wander through the streets of Lahore, or shop for handcrafted souvenirs in Multan — **ExplorePakistan** makes sure you’re well-prepared, informed, and inspired.
+Whether you're looking to hike the mountains of Gilgit, wander through the streets of Lahore, or shop for handcrafted souvenirs in Multan. **ExplorePakistan** makes sure you’re well-prepared, informed, and inspired.
 
 ---
 
