@@ -1,7 +1,7 @@
 # ExplorePakistan 🌍🇵🇰  
 *A Smart Travel Companion for Foreign Visitors to Pakistan*
 
-**ExplorePakistan** is a comprehensive, full-stack web application designed to enhance the travel experience of foreigners visiting Pakistan. It leverages intelligent features such as age-based recommendations, destination tagging, seasonal insights, and dynamic content management. Built using modern web technologies, ExplorePakistan ensures a personalized and user-friendly journey planning platform for tourists from around the world.
+**ExplorePakistan** is a comprehensive, full stack web application designed to enhance the travel experience of foreigners visiting Pakistan. It leverages intelligent features such as age-based recommendations, destination tagging, seasonal insights, and dynamic content management. Built using modern web technologies, ExplorePakistan ensures a personalized and user-friendly journey planning platform for tourists from around the world.
 
 ---
 
@@ -37,7 +37,7 @@
 |--------------|----------------------------------|
 | **Frontend** | JavaScript (Vanilla + DOM APIs) |
 | **Backend**  | Node.js with Java               |
-| **Database** | Firebase (Realtime NoSQL DB)    |
+| **Database** | Firebase (Realtime DB)          |
 
 ---
 
@@ -52,7 +52,7 @@ ExplorePakistan was created with the aim of simplifying and enriching travel to 
 
 For administrators, the system offers full content control and user moderation tools to maintain a trustworthy and engaging experience for all users.
 
-Whether you're looking to hike the mountains of Gilgit, wander through the streets of Lahore, or shop for handcrafted souvenirs in Multan. **ExplorePakistan** makes sure you’re well-prepared, informed, and inspired.
+Whether you're looking to hike the mountains of Gilgit, wander through the streets of Lahore, or shop for handcrafted souvenirs in Multan. **ExplorePakistan** makes sure you’re informed and inspired.
 
 ---
 
